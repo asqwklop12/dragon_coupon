@@ -1,0 +1,22 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+}
+
+dependencies {
+    // Jackson databind for exception classes used in ApiControllerAdvice
+    // 공개(api)로 노출하여 소비 모듈에서도 컴파일 타임에 사용할 수 있도록 함
+    api 'com.fasterxml.jackson.core:jackson-databind'
+    // Spring Boot AutoConfigure (필수)
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    // Spring Boot Starter JSON (Jackson2ObjectMapperBuilderCustomizer 포함)
+    implementation 'org.springframework.boot:spring-boot-starter-json'
+    // Spring Web (Servlet / RestTemplate / WebClient 기반)
+    implementation 'org.springframework:spring-web'
+    // Jackson (Java Time API 지원)
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+}
+

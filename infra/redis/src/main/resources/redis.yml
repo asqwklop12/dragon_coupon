@@ -1,0 +1,35 @@
+spring:
+  data:
+    redis:
+      repositories:
+        enabled: false
+
+datasource:
+  redis:
+    database: 0
+    master:
+      host: ${REDIS_MASTER_HOST:localhost}
+      port: ${REDIS_MASTER_PORT:6379}
+    replicas: []
+
+---
+spring.config.activate.on-profile: local,default,test,dev
+
+datasource:
+  redis:
+    database: 0
+    master:
+      host: localhost
+      port: 6379
+    replicas: []
+
+---
+spring.config.activate.on-profile: prod
+
+datasource:
+  redis:
+    database: 0
+    master:
+      host: redis
+      port: 6379
+    replicas: []

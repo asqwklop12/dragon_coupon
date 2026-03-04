@@ -1,0 +1,387 @@
+INFO [2026-03-04 08:16:16.706][startup][background-preinit] org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 9.0.1.Final
+INFO [2026-03-04 08:16:16.726][startup][main] com.dragons.dragons_api.DragonsApiApplication - Starting DragonsApiApplication using Java 17.0.14 with PID 29785 (/Users/yonghun/company/persnal/dragon_coupon/apps/dragons_api/build/classes/java/main started by yonghun in /Users/yonghun/company/persnal/dragon_coupon/apps/dragons_api)
+INFO [2026-03-04 08:16:16.727][startup][main] com.dragons.dragons_api.DragonsApiApplication - No active profile set, falling back to 1 default profile: "default"
+INFO [2026-03-04 08:16:17.134][startup][main] org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8083"]
+INFO [2026-03-04 08:16:17.135][startup][main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+INFO [2026-03-04 08:16:17.135][startup][main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.14]
+INFO [2026-03-04 08:16:17.189][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Starting...
+INFO [2026-03-04 08:16:17.327][startup][main] com.zaxxer.hikari.pool.HikariPool - mysql-main-pool - Added connection com.mysql.cj.jdbc.ConnectionImpl@34c76167
+INFO [2026-03-04 08:16:17.328][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Start completed.
+INFO [2026-03-04 08:16:17.332][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-replica-pool - Starting...
+INFO [2026-03-04 08:16:17.343][startup][main] com.zaxxer.hikari.pool.HikariPool - mysql-replica-pool - Added connection com.mysql.cj.jdbc.ConnectionImpl@23e61112
+INFO [2026-03-04 08:16:17.343][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-replica-pool - Start completed.
+INFO [2026-03-04 08:16:17.371][startup][main] org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+INFO [2026-03-04 08:16:17.390][startup][main] org.hibernate.Version - HHH000412: Hibernate ORM core version 7.1.8.Final
+INFO [2026-03-04 08:16:17.614][startup][main] org.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/dragons]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.42
+	Default catalog/schema: dragons/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DatasourceConnectionProviderImpl
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+INFO [2026-03-04 08:16:17.818][startup][main] org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+INFO [2026-03-04 08:16:17.982][startup][main] org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8083"]
+INFO [2026-03-04 08:16:17.986][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-replica-pool - Shutdown initiated...
+INFO [2026-03-04 08:16:18.015][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-replica-pool - Shutdown completed.
+INFO [2026-03-04 08:16:18.015][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Shutdown initiated...
+INFO [2026-03-04 08:16:18.025][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Shutdown completed.
+ERROR[2026-03-04 08:16:18.035][startup][main] org.springframework.boot.diagnostics.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8083 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8083 or configure this application to listen on another port.
+
+INFO [2026-03-04 08:17:01.936][startup][background-preinit] org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 9.0.1.Final
+INFO [2026-03-04 08:17:01.958][startup][main] com.dragons.dragons_api.DragonsApiApplication - Starting DragonsApiApplication using Java 17.0.14 with PID 29878 (/Users/yonghun/company/persnal/dragon_coupon/apps/dragons_api/build/classes/java/main started by yonghun in /Users/yonghun/company/persnal/dragon_coupon/apps/dragons_api)
+INFO [2026-03-04 08:17:01.958][startup][main] com.dragons.dragons_api.DragonsApiApplication - No active profile set, falling back to 1 default profile: "default"
+INFO [2026-03-04 08:17:02.374][startup][main] org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8084"]
+INFO [2026-03-04 08:17:02.375][startup][main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+INFO [2026-03-04 08:17:02.375][startup][main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.14]
+INFO [2026-03-04 08:17:02.428][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Starting...
+INFO [2026-03-04 08:17:02.556][startup][main] com.zaxxer.hikari.pool.HikariPool - mysql-main-pool - Added connection com.mysql.cj.jdbc.ConnectionImpl@115c946b
+INFO [2026-03-04 08:17:02.557][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Start completed.
+INFO [2026-03-04 08:17:02.560][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-replica-pool - Starting...
+INFO [2026-03-04 08:17:02.574][startup][main] com.zaxxer.hikari.pool.HikariPool - mysql-replica-pool - Added connection com.mysql.cj.jdbc.ConnectionImpl@47187f50
+INFO [2026-03-04 08:17:02.574][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-replica-pool - Start completed.
+INFO [2026-03-04 08:17:02.601][startup][main] org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+INFO [2026-03-04 08:17:02.621][startup][main] org.hibernate.Version - HHH000412: Hibernate ORM core version 7.1.8.Final
+INFO [2026-03-04 08:17:02.844][startup][main] org.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/dragons]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.42
+	Default catalog/schema: dragons/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DatasourceConnectionProviderImpl
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+INFO [2026-03-04 08:17:03.050][startup][main] org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+INFO [2026-03-04 08:17:03.212][startup][main] org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8084"]
+INFO [2026-03-04 08:17:03.221][startup][main] com.dragons.dragons_api.DragonsApiApplication - Started DragonsApiApplication in 1.644 seconds (process running for 1.778)
+INFO [2026-03-04 08:17:12.138][startup][SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - mysql-replica-pool - Shutdown initiated...
+INFO [2026-03-04 08:17:12.144][startup][SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - mysql-replica-pool - Shutdown completed.
+INFO [2026-03-04 08:17:12.144][startup][SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Shutdown initiated...
+INFO [2026-03-04 08:17:12.151][startup][SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Shutdown completed.
+INFO [2026-03-04 08:21:10.071][startup][background-preinit] org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 9.0.1.Final
+INFO [2026-03-04 08:21:10.091][startup][main] com.dragons.dragons_api.DragonsApiApplication - Starting DragonsApiApplication using Java 17.0.14 with PID 30589 (/Users/yonghun/company/persnal/dragon_coupon/apps/dragons_api/build/classes/java/main started by yonghun in /Users/yonghun/company/persnal/dragon_coupon/apps/dragons_api)
+INFO [2026-03-04 08:21:10.091][startup][main] com.dragons.dragons_api.DragonsApiApplication - No active profile set, falling back to 1 default profile: "default"
+INFO [2026-03-04 08:21:10.508][startup][main] org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8083"]
+INFO [2026-03-04 08:21:10.509][startup][main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+INFO [2026-03-04 08:21:10.509][startup][main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.14]
+INFO [2026-03-04 08:21:10.560][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Starting...
+INFO [2026-03-04 08:21:11.605][startup][main] org.apache.catalina.core.StandardService - Stopping service [Tomcat]
+ERROR[2026-03-04 08:21:11.621][startup][main] org.springframework.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Failed to initialize dependency 'dataSourceScriptDatabaseInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'dataSourceScriptDatabaseInitializer' defined in class path resource [org/springframework/boot/jdbc/autoconfigure/DataSourceInitializationAutoConfiguration.class]: Unsatisfied dependency expressed through method 'dataSourceScriptDatabaseInitializer' parameter 0: Error creating bean with name 'dataSource' defined in class path resource [com/dragons/config/DataSourceConfig.class]: Unsatisfied dependency expressed through method 'dataSource' parameter 0: Error creating bean with name 'routingDataSource' defined in class path resource [com/dragons/config/DataSourceConfig.class]: Unsatisfied dependency expressed through method 'routingDataSource' parameter 0: Error creating bean with name 'primaryDataSource' defined in class path resource [com/dragons/config/DataSourceConfig.class]: Failed to instantiate [javax.sql.DataSource]: Factory method 'primaryDataSource' threw exception with message: Failed to initialize pool: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:966)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:620)
+	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:765)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:454)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1374)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at com.dragons.dragons_api.DragonsApiApplication.main(DragonsApiApplication.java:10)
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataSourceScriptDatabaseInitializer' defined in class path resource [org/springframework/boot/jdbc/autoconfigure/DataSourceInitializationAutoConfiguration.class]: Unsatisfied dependency expressed through method 'dataSourceScriptDatabaseInitializer' parameter 0: Error creating bean with name 'dataSource' defined in class path resource [com/dragons/config/DataSourceConfig.class]: Unsatisfied dependency expressed through method 'dataSource' parameter 0: Error creating bean with name 'routingDataSource' defined in class path resource [com/dragons/config/DataSourceConfig.class]: Unsatisfied dependency expressed through method 'routingDataSource' parameter 0: Error creating bean with name 'primaryDataSource' defined in class path resource [com/dragons/config/DataSourceConfig.class]: Failed to instantiate [javax.sql.DataSource]: Factory method 'primaryDataSource' threw exception with message: Failed to initialize pool: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1362)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:565)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:309)
+	... 10 common frames omitted
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataSource' defined in class path resource [com/dragons/config/DataSourceConfig.class]: Unsatisfied dependency expressed through method 'dataSource' parameter 0: Error creating bean with name 'routingDataSource' defined in class path resource [com/dragons/config/DataSourceConfig.class]: Unsatisfied dependency expressed through method 'routingDataSource' parameter 0: Error creating bean with name 'primaryDataSource' defined in class path resource [com/dragons/config/DataSourceConfig.class]: Failed to instantiate [javax.sql.DataSource]: Factory method 'primaryDataSource' threw exception with message: Failed to initialize pool: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1362)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:565)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveBean(DefaultListableBeanFactory.java:1225)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1704)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:912)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+	... 20 common frames omitted
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'routingDataSource' defined in class path resource [com/dragons/config/DataSourceConfig.class]: Unsatisfied dependency expressed through method 'routingDataSource' parameter 0: Error creating bean with name 'primaryDataSource' defined in class path resource [com/dragons/config/DataSourceConfig.class]: Failed to instantiate [javax.sql.DataSource]: Factory method 'primaryDataSource' threw exception with message: Failed to initialize pool: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1362)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:565)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:229)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1762)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:912)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+	... 34 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'primaryDataSource' defined in class path resource [com/dragons/config/DataSourceConfig.class]: Failed to instantiate [javax.sql.DataSource]: Factory method 'primaryDataSource' threw exception with message: Failed to initialize pool: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:657)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:645)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1362)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:565)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:229)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1762)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:912)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+	... 48 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [javax.sql.DataSource]: Factory method 'primaryDataSource' threw exception with message: Failed to initialize pool: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:183)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiateWithFactoryMethod(SimpleInstantiationStrategy.java:72)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:152)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653)
+	... 62 common frames omitted
+Caused by: com.zaxxer.hikari.pool.HikariPool$PoolInitializationException: Failed to initialize pool: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.zaxxer.hikari.pool.HikariPool.throwPoolInitializationException(HikariPool.java:610)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:597)
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:97)
+	at com.zaxxer.hikari.HikariDataSource.<init>(HikariDataSource.java:80)
+	at com.dragons.config.DataSourceConfig.primaryDataSource(DataSourceConfig.java:27)
+	at com.dragons.config.DataSourceConfig$$SpringCGLIB$$0.CGLIB$primaryDataSource$2(<generated>)
+	at com.dragons.config.DataSourceConfig$$SpringCGLIB$$FastClass$$1.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:398)
+	at com.dragons.config.DataSourceConfig$$SpringCGLIB$$0.primaryDataSource(<generated>)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:155)
+	... 65 common frames omitted
+Caused by: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:165)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:55)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:840)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:416)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:237)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:180)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:576)
+	... 78 common frames omitted
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:481)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:52)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:95)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:140)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:156)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:79)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:142)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:964)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:828)
+	... 86 common frames omitted
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:554)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:144)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:53)
+	... 89 common frames omitted
+INFO [2026-03-04 09:02:58.652][startup][background-preinit] org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 9.0.1.Final
+INFO [2026-03-04 09:02:58.671][startup][main] com.dragons.dragons_api.DragonsApiApplication - Starting DragonsApiApplication using Java 17.0.14 with PID 41575 (/Users/yonghun/company/persnal/dragon_coupon/apps/dragons_api/build/classes/java/main started by yonghun in /Users/yonghun/company/persnal/dragon_coupon/apps/dragons_api)
+INFO [2026-03-04 09:02:58.671][startup][main] com.dragons.dragons_api.DragonsApiApplication - The following 1 profile is active: "local"
+INFO [2026-03-04 09:02:59.063][startup][main] org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8084"]
+INFO [2026-03-04 09:02:59.064][startup][main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+INFO [2026-03-04 09:02:59.064][startup][main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.14]
+INFO [2026-03-04 09:02:59.117][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Starting...
+INFO [2026-03-04 09:03:00.251][startup][main] org.apache.catalina.core.StandardService - Stopping service [Tomcat]
+ERROR[2026-03-04 09:03:00.263][startup][main] org.springframework.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Failed to initialize dependency 'dataSourceScriptDatabaseInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'dataSourceScriptDatabaseInitializer' defined in class path resource [org/springframework/boot/jdbc/autoconfigure/DataSourceInitializationAutoConfiguration.class]: Unsatisfied dependency expressed through method 'dataSourceScriptDatabaseInitializer' parameter 0: Error creating bean with name 'dataSource' defined in class path resource [com/dragons/config/DataSourceConfig.class]: Failed to instantiate [javax.sql.DataSource]: Factory method 'dataSource' threw exception with message: Failed to initialize pool: Access denied for user 'application'@'%' to database 'dragons'
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:966)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:620)
+	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:765)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:454)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1374)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at com.dragons.dragons_api.DragonsApiApplication.main(DragonsApiApplication.java:10)
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataSourceScriptDatabaseInitializer' defined in class path resource [org/springframework/boot/jdbc/autoconfigure/DataSourceInitializationAutoConfiguration.class]: Unsatisfied dependency expressed through method 'dataSourceScriptDatabaseInitializer' parameter 0: Error creating bean with name 'dataSource' defined in class path resource [com/dragons/config/DataSourceConfig.class]: Failed to instantiate [javax.sql.DataSource]: Factory method 'dataSource' threw exception with message: Failed to initialize pool: Access denied for user 'application'@'%' to database 'dragons'
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:546)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1362)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:565)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:309)
+	... 10 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSource' defined in class path resource [com/dragons/config/DataSourceConfig.class]: Failed to instantiate [javax.sql.DataSource]: Factory method 'dataSource' threw exception with message: Failed to initialize pool: Access denied for user 'application'@'%' to database 'dragons'
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:657)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:645)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1362)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:565)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveBean(DefaultListableBeanFactory.java:1225)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1704)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1651)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:912)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+	... 20 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [javax.sql.DataSource]: Factory method 'dataSource' threw exception with message: Failed to initialize pool: Access denied for user 'application'@'%' to database 'dragons'
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:183)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiateWithFactoryMethod(SimpleInstantiationStrategy.java:72)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:152)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653)
+	... 34 common frames omitted
+Caused by: com.zaxxer.hikari.pool.HikariPool$PoolInitializationException: Failed to initialize pool: Access denied for user 'application'@'%' to database 'dragons'
+	at com.zaxxer.hikari.pool.HikariPool.throwPoolInitializationException(HikariPool.java:610)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:597)
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:97)
+	at com.zaxxer.hikari.HikariDataSource.<init>(HikariDataSource.java:80)
+	at com.dragons.config.DataSourceConfig.dataSource(DataSourceConfig.java:23)
+	at com.dragons.config.DataSourceConfig$$SpringCGLIB$$0.CGLIB$dataSource$1(<generated>)
+	at com.dragons.config.DataSourceConfig$$SpringCGLIB$$FastClass$$1.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:258)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:398)
+	at com.dragons.config.DataSourceConfig$$SpringCGLIB$$0.dataSource(<generated>)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.lambda$instantiate$0(SimpleInstantiationStrategy.java:155)
+	... 37 common frames omitted
+Caused by: java.sql.SQLSyntaxErrorException: Access denied for user 'application'@'%' to database 'dragons'
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:112)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:114)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:840)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:416)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:237)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:180)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:576)
+	... 50 common frames omitted
+INFO [2026-03-04 09:04:03.283][startup][background-preinit] org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 9.0.1.Final
+INFO [2026-03-04 09:04:03.302][startup][main] com.dragons.dragons_api.DragonsApiApplication - Starting DragonsApiApplication using Java 17.0.14 with PID 41819 (/Users/yonghun/company/persnal/dragon_coupon/apps/dragons_api/build/classes/java/main started by yonghun in /Users/yonghun/company/persnal/dragon_coupon/apps/dragons_api)
+INFO [2026-03-04 09:04:03.302][startup][main] com.dragons.dragons_api.DragonsApiApplication - The following 1 profile is active: "local"
+INFO [2026-03-04 09:04:03.712][startup][main] org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8084"]
+INFO [2026-03-04 09:04:03.713][startup][main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+INFO [2026-03-04 09:04:03.713][startup][main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.14]
+INFO [2026-03-04 09:04:03.770][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Starting...
+INFO [2026-03-04 09:04:03.907][startup][main] com.zaxxer.hikari.pool.HikariPool - mysql-main-pool - Added connection com.mysql.cj.jdbc.ConnectionImpl@78d92eef
+INFO [2026-03-04 09:04:03.907][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Start completed.
+INFO [2026-03-04 09:04:03.932][startup][main] org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+INFO [2026-03-04 09:04:03.952][startup][main] org.hibernate.Version - HHH000412: Hibernate ORM core version 7.1.8.Final
+INFO [2026-03-04 09:04:04.173][startup][main] org.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/coupon_db]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.42
+	Default catalog/schema: coupon_db/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DatasourceConnectionProviderImpl
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+INFO [2026-03-04 09:04:04.383][startup][main] org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+INFO [2026-03-04 09:04:04.540][startup][main] org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8084"]
+INFO [2026-03-04 09:04:04.550][startup][main] com.dragons.dragons_api.DragonsApiApplication - Started DragonsApiApplication in 1.47 seconds (process running for 1.611)
+INFO [2026-03-04 09:04:39.753][startup][SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Shutdown initiated...
+INFO [2026-03-04 09:04:39.759][startup][SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Shutdown completed.
+INFO [2026-03-04 09:33:33.446][startup][background-preinit] org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 9.0.1.Final
+INFO [2026-03-04 09:33:33.466][startup][main] com.dragons.dragons_api.DragonsApiApplication - Starting DragonsApiApplication using Java 17.0.14 with PID 49570 (/Users/yonghun/company/persnal/dragon_coupon/apps/dragons_api/build/classes/java/main started by yonghun in /Users/yonghun/company/persnal/dragon_coupon/apps/dragons_api)
+INFO [2026-03-04 09:33:33.467][startup][main] com.dragons.dragons_api.DragonsApiApplication - The following 1 profile is active: "local"
+INFO [2026-03-04 09:33:33.966][startup][main] org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8084"]
+INFO [2026-03-04 09:33:33.967][startup][main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+INFO [2026-03-04 09:33:33.967][startup][main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.14]
+INFO [2026-03-04 09:33:34.037][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Starting...
+INFO [2026-03-04 09:33:34.173][startup][main] com.zaxxer.hikari.pool.HikariPool - mysql-main-pool - Added connection com.mysql.cj.jdbc.ConnectionImpl@ba4f370
+INFO [2026-03-04 09:33:34.174][startup][main] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Start completed.
+INFO [2026-03-04 09:33:34.201][startup][main] org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+INFO [2026-03-04 09:33:34.223][startup][main] org.hibernate.Version - HHH000412: Hibernate ORM core version 7.1.8.Final
+INFO [2026-03-04 09:33:34.454][startup][main] org.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/coupon_db]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.42
+	Default catalog/schema: coupon_db/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DatasourceConnectionProviderImpl
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+INFO [2026-03-04 09:33:34.671][startup][main] org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+WARN [2026-03-04 09:33:34.780][startup][main] io.netty.resolver.dns.DnsServerAddressStreamProviders - Can not find io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider in the classpath, fallback to system defaults. This may result in incorrect DNS resolutions on MacOS. Check whether you have a dependency on 'io.netty:netty-resolver-dns-native-macos'
+INFO [2026-03-04 09:33:35.027][startup][main] org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8084"]
+INFO [2026-03-04 09:33:35.037][startup][main] com.dragons.dragons_api.DragonsApiApplication - Started DragonsApiApplication in 1.804 seconds (process running for 1.945)
+INFO [2026-03-04 09:33:45.967][startup][SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Shutdown initiated...
+INFO [2026-03-04 09:33:45.973][startup][SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource - mysql-main-pool - Shutdown completed.

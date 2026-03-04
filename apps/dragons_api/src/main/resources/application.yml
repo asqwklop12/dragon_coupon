@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: dragons
+  config:
+    import:
+      - logging.yml
+      - jpa.yml
+      - redis.yml
+      - kafka.yml
+server:
+  servlet:
+    session:
+      cookie:
+        secure: true
+        http-only: true
+        same-site: lax
+      timeout: 30
+  port: 8083
+logging:
+  request-response:
+    enabled: true
+    body-enabled: true
+    max-body-size: 10240  # 10KB

@@ -1,0 +1,92 @@
+plugins {
+    id 'java'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.dragons'
+version = '0.0.1-SNAPSHOT'
+description = 'dragon_coupon'
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+
+    ext {
+        lombokVersion = '1.18.34'
+    }
+    apply plugin: 'java'
+    apply plugin: "io.spring.dependency-management"
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    }
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+
+    dependencies {
+        compileOnly "org.projectlombok:lombok:${lombokVersion}"
+        annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+        testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+        testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    }
+
+    tasks.withType(Test).configureEach {
+        maxParallelForks = 1
+        useJUnitPlatform()
+        systemProperty("user.timezone", "Asia/Seoul")
+        systemProperty("spring.profiles.active", "test")
+        jvmArgs("-Xshare:off")
+        testLogging {
+            events "passed", "skipped", "failed"
+            showStandardStreams = true
+            exceptionFormat "full"
+        }
+    }
+
+    plugins.withId('org.springframework.boot') {
+        dependencies {
+            implementation 'org.springframework.boot:spring-boot-starter-validation'
+        }
+        if (project.name != 'common') {
+            dependencies {
+                implementation project(":common")
+            }
+        }
+
+        if (!project.path.startsWith(':apps:')) {
+            tasks.named('bootJar') {
+                enabled = false
+            }
+            tasks.named('jar') {
+                enabled = true
+            }
+        }
+    }
+}
+
+configure(subprojects) {
+    plugins.withId('io.spring.dependency-management') {
+        dependencyManagement {
+            imports {
+                mavenBom "org.testcontainers:testcontainers-bom:1.19.8"
+            }
+        }
+    }
+}
+
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
