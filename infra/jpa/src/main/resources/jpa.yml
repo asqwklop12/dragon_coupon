@@ -1,4 +1,9 @@
 spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/coupon_db
+    username: application
+    password: application
   jpa:
     open-in-view: false
     generate-ddl: false
@@ -26,56 +31,44 @@ datasource:
 spring.config.activate.on-profile: local
 
 spring:
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-
-datasource:
-  mysql-jpa:
-    primary:
-      jdbc-url: jdbc:mysql://localhost:3306/coupon_db
-      username: application
-      password: application
-
----
-spring.config.activate.on-profile: test
-
-spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/coupon_db
+    username: application
+    password: application
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: create
 
-datasource:
-  mysql-jpa:
-    primary:
-      jdbc-url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/coupon_db
-      username: ${MYSQL_USER:application}
-      password: ${MYSQL_PWD:application}
-      maximum-pool-size: 10
-      minimum-idle: 5
+---
+spring.config.activate.on-profile: test
+
+spring:
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/coupon_db
+    username: ${MYSQL_USER:application}
+    password: ${MYSQL_PWD:application}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
 
 ---
 spring.config.activate.on-profile: dev
 
 spring:
+  datasource:
+    url: jdbc:mysql://host.docker.internal:3306/coupon_db
+    username: application
+    password: application
   jpa:
     show-sql: true
-
-datasource:
-  mysql-jpa:
-    primary:
-      jdbc-url: jdbc:mysql://host.docker.internal:3306/coupon_db
-      username: application
-      password: application
 
 ---
 spring.config.activate.on-profile: prod
 
-datasource:
-  mysql-jpa:
-    primary:
-      jdbc-url: jdbc:mysql://mysql8:3306/coupon_db
-      username: application
-      password: application
+spring:
+  datasource:
+    url: jdbc:mysql://mysql8:3306/coupon_db
+    username: application
+    password: application
