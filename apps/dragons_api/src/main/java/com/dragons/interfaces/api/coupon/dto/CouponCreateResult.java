@@ -1,0 +1,22 @@
+package com.dragons.interfaces.api.coupon.dto;
+
+import com.dragons.domain.coupon.CouponStatus;
+import com.dragons.domain.coupon.CouponType;
+import java.time.OffsetDateTime;
+
+public record CouponCreateResult(
+    Long couponId,
+    String name,
+    String description,
+    CouponType couponType,
+    CouponStatus status,
+    Integer discountValue,
+    Integer minOrderAmount,
+    Integer maxDiscountAmount,
+    Integer totalQuantity,
+    Integer issuedQuantity,
+    Integer validDays,
+    OffsetDateTime startDate,
+    OffsetDateTime endDate
+) {
+}

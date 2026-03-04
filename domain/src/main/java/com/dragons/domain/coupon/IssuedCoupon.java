@@ -1,6 +1,5 @@
-package com.dragons.domain.issuedcoupon;
+package com.dragons.domain.coupon;
 
-import com.dragons.domain.coupon.Coupon;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

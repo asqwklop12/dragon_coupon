@@ -1,4 +1,4 @@
-package com.dragons.domain.issuedcoupon;
+package com.dragons.domain.coupon;
 
 public enum IssuedCouponStatus {
   ISSUED,

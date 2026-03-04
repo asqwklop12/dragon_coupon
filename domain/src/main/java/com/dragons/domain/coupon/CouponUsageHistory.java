@@ -1,6 +1,5 @@
-package com.dragons.domain.couponusage;
+package com.dragons.domain.coupon;
 
-import com.dragons.domain.issuedcoupon.IssuedCoupon;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
