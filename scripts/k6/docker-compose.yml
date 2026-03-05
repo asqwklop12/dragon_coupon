@@ -1,0 +1,17 @@
+services:
+  k6-sequential:
+    image: grafana/k6:1.2.3
+    environment:
+      BASE_URL: ${K6_BASE_URL}
+      ISSUE_COUNT: ${K6_ISSUE_COUNT:-3}
+      USER_ID_BASE: ${K6_USER_ID_BASE:-1}
+      MAX_DURATION: ${K6_MAX_DURATION:-30s}
+    volumes:
+      - ./:/scripts:ro
+    command: ["run", "/scripts/coupon-issue-load-test.js"]
+    networks:
+      - dragons_default
+
+networks:
+  dragons_default:
+    external: true

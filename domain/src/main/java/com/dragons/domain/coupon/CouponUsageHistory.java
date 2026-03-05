@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,5 +38,21 @@ public class CouponUsageHistory {
   private Integer discountAmount;
 
   @Column(nullable = false)
-  private LocalDateTime usedAt;
+  private ZonedDateTime usedAt;
+
+  public static CouponUsageHistory create(
+      IssuedCoupon issuedCoupon,
+      Long userId,
+      Long orderId,
+      Integer discountAmount,
+      ZonedDateTime usedAt
+  ) {
+    CouponUsageHistory couponUsageHistory = new CouponUsageHistory();
+    couponUsageHistory.issuedCoupon = issuedCoupon;
+    couponUsageHistory.userId = userId;
+    couponUsageHistory.orderId = orderId;
+    couponUsageHistory.discountAmount = discountAmount;
+    couponUsageHistory.usedAt = usedAt;
+    return couponUsageHistory;
+  }
 }

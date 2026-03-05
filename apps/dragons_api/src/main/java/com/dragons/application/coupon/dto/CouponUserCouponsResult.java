@@ -1,7 +1,7 @@
 package com.dragons.application.coupon.dto;
 
 import com.dragons.domain.coupon.IssuedCouponStatus;
-import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public record CouponUserCouponsResult(List<CouponItem> coupons) {
@@ -13,9 +13,9 @@ public record CouponUserCouponsResult(List<CouponItem> coupons) {
       Long couponId,
       String couponName,
       IssuedCouponStatus status,
-      OffsetDateTime issuedAt,
-      OffsetDateTime expiredAt,
-      OffsetDateTime usedAt
+      ZonedDateTime issuedAt,
+      ZonedDateTime expiredAt,
+      ZonedDateTime usedAt
   ) {
   }
 }

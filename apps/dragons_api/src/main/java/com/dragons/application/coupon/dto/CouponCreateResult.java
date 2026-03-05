@@ -2,7 +2,7 @@ package com.dragons.application.coupon.dto;
 
 import com.dragons.domain.coupon.CouponStatus;
 import com.dragons.domain.coupon.CouponType;
-import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 
 public record CouponCreateResult(
     Long couponId,
@@ -16,7 +16,7 @@ public record CouponCreateResult(
     Integer totalQuantity,
     Integer issuedQuantity,
     Integer validDays,
-    OffsetDateTime startDate,
-    OffsetDateTime endDate
+    ZonedDateTime startDate,
+    ZonedDateTime endDate
 ) {
 }

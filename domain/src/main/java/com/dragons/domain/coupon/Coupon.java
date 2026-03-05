@@ -8,7 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -56,8 +56,58 @@ public class Coupon {
   private Integer validDays;
 
   @Column(nullable = false)
-  private LocalDateTime startDate;
+  private ZonedDateTime startDate;
 
   @Column(nullable = false)
-  private LocalDateTime endDate;
+  private ZonedDateTime endDate;
+
+  public static Coupon create(
+      String name,
+      String description,
+      CouponType couponType,
+      CouponStatus status,
+      Integer discountValue,
+      Integer minOrderAmount,
+      Integer maxDiscountAmount,
+      Integer totalQuantity,
+      Integer validDays,
+      ZonedDateTime startDate,
+      ZonedDateTime endDate
+  ) {
+    Coupon coupon = new Coupon();
+    coupon.name = name;
+    coupon.description = description;
+    coupon.couponType = couponType;
+    coupon.status = status;
+    coupon.discountValue = discountValue;
+    coupon.minOrderAmount = minOrderAmount;
+    coupon.maxDiscountAmount = maxDiscountAmount;
+    coupon.totalQuantity = totalQuantity;
+    coupon.issuedQuantity = 0;
+    coupon.validDays = validDays;
+    coupon.startDate = startDate;
+    coupon.endDate = endDate;
+    return coupon;
+  }
+
+  public boolean isIssuableAt(ZonedDateTime now) {
+    return status == CouponStatus.ACTIVE
+        && (startDate.isBefore(now) || startDate.isEqual(now))
+        && (endDate.isAfter(now) || endDate.isEqual(now))
+        && getRemainingQuantity() > 0;
+  }
+
+  public int getRemainingQuantity() {
+    return Math.max(totalQuantity - issuedQuantity, 0);
+  }
+
+  public void issue(ZonedDateTime now) {
+    if (!isIssuableAt(now)) {
+      throw new IllegalStateException("현재 발급 가능한 쿠폰이 아닙니다.");
+    }
+    this.issuedQuantity += 1;
+    if (getRemainingQuantity() == 0) {
+      this.status = CouponStatus.EXHAUSTED;
+    }
+  }
 }
