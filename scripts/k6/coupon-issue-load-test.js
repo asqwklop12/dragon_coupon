@@ -2,7 +2,9 @@ import http from 'k6/http';
 import {Counter, Gauge} from 'k6/metrics';
 
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:8083';
-const ISSUE_COUNT = readIssueCount('ISSUE_COUNT', 3); // 2~3개 권장
+const COUPON_ID = readOptionalPositiveIntEnv('COUPON_ID');
+const ISSUE_COUNT = readPositiveIntEnv('ISSUE_COUNT', 3);
+const VUS = readPositiveIntEnv('VUS', 1);
 const USER_ID_BASE = readPositiveIntEnv('USER_ID_BASE', 1);
 const MAX_DURATION = __ENV.MAX_DURATION || '30s';
 
@@ -15,7 +17,7 @@ export const options = {
   scenarios: {
     coupon_issue_sequential_test: {
       executor: 'shared-iterations',
-      vus: 1, // 동시성 테스트 아님
+      vus: VUS,
       iterations: ISSUE_COUNT,
       maxDuration: MAX_DURATION,
     },
@@ -31,10 +33,14 @@ function readPositiveIntEnv(name, fallback) {
   return value;
 }
 
-function readIssueCount(name, fallback) {
-  const value = readPositiveIntEnv(name, fallback);
-  if (value < 2 || value > 3) {
-    throw new Error(`Invalid ${name}: ${value}. 이 스크립트는 2~3회만 실행합니다.`);
+function readOptionalPositiveIntEnv(name) {
+  const raw = __ENV[name];
+  if (raw === undefined || raw === '') {
+    return null;
+  }
+  const value = Number(raw);
+  if (!Number.isInteger(value) || value < 1) {
+    throw new Error(`Invalid ${name}: ${raw}`);
   }
   return value;
 }
@@ -90,17 +96,20 @@ function readRemainingStock(couponId) {
 }
 
 export function setup() {
-  const couponId = createCoupon();
+  const couponId = COUPON_ID ?? createCoupon();
+  const couponSource = COUPON_ID ? 'existing' : 'created';
   const initialStock = readRemainingStock(couponId);
   if (initialStock !== null) {
     initialStockGauge.add(initialStock);
   }
-  console.log(`[setup] couponId=${couponId}, issueCount=${ISSUE_COUNT}, initialStock=${initialStock}`);
-  return { couponId, initialStock };
+  console.log(
+    `[setup] couponId=${couponId}, source=${couponSource}, issueCount=${ISSUE_COUNT}, initialStock=${initialStock}`,
+  );
+  return { couponId, initialStock, couponSource };
 }
 
 export default function (data) {
-  const userId = USER_ID_BASE + __ITER; // 순차 발급용 유저
+  const userId = USER_ID_BASE + __ITER + (__VU - 1);
   const response = http.post(
     `${BASE_URL}/api/coupons/${data.couponId}/issue`,
     JSON.stringify({ userId }),
@@ -130,7 +139,9 @@ export function teardown(data) {
   if (finalStock !== null) {
     finalStockGauge.add(finalStock);
   }
-  console.log(`[teardown] couponId=${data.couponId}, initialStock=${data.initialStock}, finalStock=${finalStock}`);
+  console.log(
+    `[teardown] couponId=${data.couponId}, source=${data.couponSource}, initialStock=${data.initialStock}, finalStock=${finalStock}`,
+  );
 }
 
 function readMetricCount(data, metricName) {
@@ -150,8 +161,9 @@ export function handleSummary(data) {
 
   const summary = [
     '',
-    '=== Coupon Issue Sequential Test Summary ===',
+    '=== Coupon Issue Test Summary ===',
     `- baseUrl: ${BASE_URL}`,
+    `- vus: ${VUS}`,
     `- issueCount: ${ISSUE_COUNT}`,
     `- success: ${success}`,
     `- failure: ${failure}`,

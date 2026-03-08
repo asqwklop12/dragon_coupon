@@ -3,7 +3,9 @@ services:
     image: grafana/k6:1.2.3
     environment:
       BASE_URL: ${K6_BASE_URL}
+      COUPON_ID: ${K6_COUPON_ID:-}
       ISSUE_COUNT: ${K6_ISSUE_COUNT:-3}
+      VUS: ${K6_VUS:-1}
       USER_ID_BASE: ${K6_USER_ID_BASE:-1}
       MAX_DURATION: ${K6_MAX_DURATION:-30s}
     volumes:
