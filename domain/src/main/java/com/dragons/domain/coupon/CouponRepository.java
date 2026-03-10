@@ -11,5 +11,7 @@ public interface CouponRepository {
 
   Optional<Coupon> readCoupon(Long couponId);
 
+  Optional<Coupon> readCouponForUpdate(Long couponId);
+
   Optional<Coupon> readActiveCoupon(Long couponId);
 }

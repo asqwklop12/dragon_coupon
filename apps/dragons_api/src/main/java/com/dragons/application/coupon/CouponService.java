@@ -91,7 +91,7 @@ public class CouponService {
   @Transactional
   public CouponIssueResult issueCoupon(CouponIssueCommand command) {
     ZonedDateTime now = ZonedDateTime.now();
-    Coupon coupon = couponRepository.readCoupon(command.couponId())
+    Coupon coupon = couponRepository.readCouponForUpdate(command.couponId())
         .orElseThrow(CouponNotFoundException::new);
 
     if (issuedCouponRepository.existsByCouponIdAndUserId(command.couponId(), command.userId())) {
