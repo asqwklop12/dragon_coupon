@@ -1,13 +1,36 @@
 services:
-  k6-sequential:
+  k6-issue-large-stock:
     image: grafana/k6:1.2.3
     environment:
       BASE_URL: ${K6_BASE_URL}
+      TEST_CASE: LARGE_STOCK
       COUPON_ID: ${K6_COUPON_ID:-}
-      ISSUE_COUNT: ${K6_ISSUE_COUNT:-3}
-      VUS: ${K6_VUS:-1}
+      COUPON_TOTAL_QUANTITY: ${K6_COUPON_TOTAL_QUANTITY:-10000}
+      ISSUE_ATTEMPTS: ${K6_ISSUE_ATTEMPTS:-10000}
+      VUS: ${K6_VUS:-200}
       USER_ID_BASE: ${K6_USER_ID_BASE:-1}
-      MAX_DURATION: ${K6_MAX_DURATION:-30s}
+      MAX_DURATION: ${K6_MAX_DURATION:-5m}
+      THRESHOLD_P95_MS: ${K6_THRESHOLD_P95_MS:-1200}
+      THRESHOLD_P99_MS: ${K6_THRESHOLD_P99_MS:-2500}
+    volumes:
+      - ./:/scripts:ro
+    command: ["run", "/scripts/coupon-issue-load-test.js"]
+    networks:
+      - dragons_default
+
+  k6-issue-hot-race:
+    image: grafana/k6:1.2.3
+    environment:
+      BASE_URL: ${K6_BASE_URL}
+      TEST_CASE: HOT_RACE
+      COUPON_ID: ${K6_COUPON_ID:-}
+      COUPON_TOTAL_QUANTITY: ${K6_COUPON_TOTAL_QUANTITY:-10}
+      ISSUE_ATTEMPTS: ${K6_ISSUE_ATTEMPTS:-5000}
+      VUS: ${K6_VUS:-300}
+      USER_ID_BASE: ${K6_USER_ID_BASE:-1}
+      MAX_DURATION: ${K6_MAX_DURATION:-3m}
+      THRESHOLD_P95_MS: ${K6_THRESHOLD_P95_MS:-2500}
+      THRESHOLD_P99_MS: ${K6_THRESHOLD_P99_MS:-5000}
     volumes:
       - ./:/scripts:ro
     command: ["run", "/scripts/coupon-issue-load-test.js"]
