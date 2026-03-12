@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 interface JpaIssuedCouponRepository extends JpaRepository<IssuedCoupon, Long> {
   boolean existsByCoupon_IdAndUserId(Long couponId, Long userId);
 
+  long countByCoupon_Id(Long couponId);
+
   @EntityGraph(attributePaths = "coupon")
   List<IssuedCoupon> findAllByUserIdOrderByIssuedAtDesc(Long userId);
 
