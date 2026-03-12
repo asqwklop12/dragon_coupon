@@ -34,6 +34,7 @@ const COUPON_TOTAL_QUANTITY = readPositiveIntEnv('COUPON_TOTAL_QUANTITY', CASE_C
 const ISSUE_ATTEMPTS = readPositiveIntEnv('ISSUE_ATTEMPTS', CASE_CONFIG.issueAttempts);
 const VUS = readPositiveIntEnv('VUS', CASE_CONFIG.vus);
 const USER_ID_BASE = readPositiveIntEnv('USER_ID_BASE', 1);
+const STOCK_READ_RETRIES = readPositiveIntEnv('STOCK_READ_RETRIES', 3);
 const MAX_DURATION = __ENV.MAX_DURATION || CASE_CONFIG.maxDuration;
 const THRESHOLD_P95_MS = readPositiveIntEnv('THRESHOLD_P95_MS', CASE_CONFIG.thresholdP95Ms);
 const THRESHOLD_P99_MS = readPositiveIntEnv('THRESHOLD_P99_MS', CASE_CONFIG.thresholdP99Ms);
@@ -56,6 +57,7 @@ export const options = {
       maxDuration: MAX_DURATION,
     },
   },
+  summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)'],
   thresholds: {
     'http_req_duration{type:issue}': [
       `p(95)<${THRESHOLD_P95_MS}`,
@@ -135,6 +137,19 @@ function readRemainingStock(couponId) {
   return Number(response.json()?.data?.remainingQuantity ?? null);
 }
 
+function readRemainingStockWithRetry(couponId, attempts = STOCK_READ_RETRIES, phase = 'stock') {
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    const remainingStock = readRemainingStock(couponId);
+    if (remainingStock !== null) {
+      return remainingStock;
+    }
+
+    console.warn(`[${phase}] 조회 재시도 실패 attempt=${attempt}/${attempts}, couponId=${couponId}`);
+  }
+
+  return null;
+}
+
 export function setup() {
   const couponId = COUPON_ID ?? createCoupon(COUPON_TOTAL_QUANTITY);
   const couponSource = COUPON_ID ? 'existing' : 'created';
@@ -190,7 +205,7 @@ export default function (data) {
 }
 
 export function teardown(data) {
-  const finalStock = readRemainingStock(data.couponId);
+  const finalStock = readRemainingStockWithRetry(data.couponId, STOCK_READ_RETRIES, 'teardown');
   if (finalStock !== null) {
     finalStockGauge.add(finalStock);
   }
@@ -221,8 +236,18 @@ export function handleSummary(data) {
   const failureBadRequest = readMetricCount(data, 'issue_failure_bad_request');
   const failureOther = readMetricCount(data, 'issue_failure_other');
 
+  const couponId = Number(data.setup_data?.couponId ?? 0) || null;
   const initialStock = readGaugeValue(data, 'coupon_stock_initial');
-  const finalStock = readGaugeValue(data, 'coupon_stock_final');
+  const finalStockFromMetric = readGaugeValue(data, 'coupon_stock_final');
+  const finalStockFromHttp = finalStockFromMetric === null && couponId !== null
+    ? readRemainingStockWithRetry(couponId, STOCK_READ_RETRIES, 'handleSummary')
+    : null;
+  const finalStock = finalStockFromMetric ?? finalStockFromHttp;
+  const finalStockSource = finalStockFromMetric !== null
+    ? 'metric'
+    : finalStockFromHttp !== null
+      ? 'handleSummary_http'
+      : 'unavailable';
   const expectedMaxSuccess = initialStock === null
     ? Math.min(COUPON_TOTAL_QUANTITY, ISSUE_ATTEMPTS)
     : Math.min(initialStock, ISSUE_ATTEMPTS);
@@ -254,6 +279,7 @@ export function handleSummary(data) {
     `  - failureOther: ${failureOther}`,
     `- initialStock: ${initialStock}`,
     `- finalStock: ${finalStock}`,
+    `- finalStockSource: ${finalStockSource}`,
     `- actualIssuedByStock: ${actualIssuedByStock}`,
     `- expectedMaxSuccess: ${expectedMaxSuccess}`,
     `- oversoldBySuccess: ${oversoldBySuccess}`,
