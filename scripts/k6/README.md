@@ -39,6 +39,7 @@ docker compose -f scripts/k6/docker-compose.yml run --rm k6-issue-hot-race
 - `K6_ISSUE_ATTEMPTS` (선택, 발급 시도 횟수)
 - `K6_VUS` (선택, 동시 사용자 수)
 - `K6_USER_ID_BASE` (선택, 기본 1)
+- `K6_STOCK_READ_RETRIES` (선택, 재고 조회 재시도 횟수, 기본 3)
 - `K6_MAX_DURATION` (선택)
 - `K6_THRESHOLD_P95_MS` (선택, issue API p95 임계값)
 - `K6_THRESHOLD_P99_MS` (선택, issue API p99 임계값)
@@ -49,5 +50,6 @@ docker compose -f scripts/k6/docker-compose.yml run --rm k6-issue-hot-race
 
 ## 결과 확인 포인트
 - `oversoldBySuccess` / `oversoldByStock` 가 `false`인지
+- `finalStock` / `finalStockSource` 로 최종 재고가 실제 조회됐는지
 - `http_req_duration p95 / p99`
 - `failureConflict(409)` 비율
