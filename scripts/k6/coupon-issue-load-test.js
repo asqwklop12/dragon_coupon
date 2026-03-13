@@ -186,7 +186,10 @@ export default function (data) {
   let issued = false;
   if (response.status >= 200 && response.status < 300) {
     const body = response.json();
-    issued = body?.success === true && body?.data?.issuedCouponId != null;
+    issued = body?.success === true
+      && body?.data?.couponId === data.couponId
+      && body?.data?.userId === userId
+      && body?.data?.requestedAt != null;
   }
 
   if (issued) {

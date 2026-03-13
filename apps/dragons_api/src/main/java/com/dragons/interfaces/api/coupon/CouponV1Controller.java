@@ -1,9 +1,11 @@
 package com.dragons.interfaces.api.coupon;
 
+import com.dragons.application.coupon.CouponIssueRequestService;
 import com.dragons.application.coupon.CouponService;
 import com.dragons.application.coupon.dto.CouponCreateCommand;
 import com.dragons.application.coupon.dto.CouponIssueCommand;
 import com.dragons.application.coupon.dto.CouponUseCommand;
+import com.dragons.application.coupon.event.CouponIssueRequestedEvent;
 import com.dragons.interfaces.api.coupon.dto.CouponV1Dto;
 import com.dragons.support.api.ApiResponse;
 import jakarta.validation.Valid;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/coupons")
 public class CouponV1Controller implements CouponV1Spec {
+  private final CouponIssueRequestService couponIssueRequestService;
   private final CouponService couponService;
 
   @Override
@@ -84,14 +87,12 @@ public class CouponV1Controller implements CouponV1Spec {
       @PathVariable Long couponId,
       @RequestBody @Valid CouponV1Dto.Issue.Request request
   ) {
-    var result = couponService.issueCoupon(new CouponIssueCommand(couponId, request.userId()));
+    CouponIssueRequestedEvent event = couponIssueRequestService.requestIssue(
+        new CouponIssueCommand(couponId, request.userId()));
     return ApiResponse.successResponse(new CouponV1Dto.Issue.Response(
-        result.issuedCouponId(),
-        result.couponId(),
-        result.userId(),
-        result.status(),
-        result.issuedAt().toLocalDateTime(),
-        result.expiredAt().toLocalDateTime()
+        event.couponId(),
+        event.userId(),
+        event.requestedAt().toLocalDateTime()
     ));
   }
 
