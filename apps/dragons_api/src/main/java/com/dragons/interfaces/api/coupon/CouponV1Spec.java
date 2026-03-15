@@ -16,7 +16,7 @@ public interface CouponV1Spec {
   @Operation(summary = "발급 가능 쿠폰 조회", description = "현재 발급 가능한 쿠폰 목록을 조회합니다.")
   ApiResponse<CouponV1Dto.Available.Response> getAvailableCoupons();
 
-  @Operation(summary = "쿠폰 발급", description = "선착순 쿠폰 발급을 요청합니다.")
+  @Operation(summary = "쿠폰 발급 요청", description = "선착순 쿠폰 발급을 비동기로 요청합니다.")
   ApiResponse<CouponV1Dto.Issue.Response> issueCoupon(Long couponId, CouponV1Dto.Issue.Request request);
 
   @Operation(summary = "쿠폰 재고 조회", description = "특정 쿠폰의 남은 수량을 조회합니다.")

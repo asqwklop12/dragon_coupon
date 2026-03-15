@@ -11,6 +11,8 @@ public interface IssuedCouponRepository {
 
   boolean existsByCouponIdAndUserId(Long couponId, Long userId);
 
+  long countByCouponId(Long couponId);
+
   List<IssuedCoupon> readUserCoupons(Long userId);
 
   List<IssuedCoupon> readUsableUserCoupons(Long userId, ZonedDateTime now);

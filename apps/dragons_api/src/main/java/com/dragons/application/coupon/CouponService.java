@@ -11,6 +11,8 @@ import com.dragons.application.coupon.dto.CouponUseResult;
 import com.dragons.application.coupon.dto.CouponUserCouponsResult;
 import com.dragons.domain.coupon.Coupon;
 import com.dragons.domain.coupon.CouponRepository;
+import com.dragons.domain.coupon.CouponStatus;
+import com.dragons.domain.coupon.CouponStockRepository;
 import com.dragons.domain.coupon.CouponType;
 import com.dragons.domain.coupon.CouponUsageHistory;
 import com.dragons.domain.coupon.CouponUsageHistoryRepository;
@@ -32,25 +34,30 @@ import org.springframework.transaction.annotation.Transactional;
 public class CouponService {
   private final CouponRepository couponRepository;
   private final IssuedCouponRepository issuedCouponRepository;
+  private final CouponStockRepository couponStockRepository;
   private final CouponUsageHistoryRepository couponUsageHistoryRepository;
 
   @Transactional(readOnly = true)
   public CouponAvailableResult getAvailableCoupons() {
     ZonedDateTime now = ZonedDateTime.now();
     List<CouponAvailableResult.CouponItem> coupons = couponRepository.readIssuableCoupons(now).stream()
-        .filter(coupon -> coupon.getRemainingQuantity() > 0)
-        .map(coupon -> new CouponAvailableResult.CouponItem(
-            coupon.getId(),
-            coupon.getName(),
-            coupon.getDescription(),
-            coupon.getCouponType(),
-            coupon.getDiscountValue(),
-            coupon.getMinOrderAmount(),
-            coupon.getMaxDiscountAmount(),
-            coupon.getRemainingQuantity(),
-            coupon.getStartDate(),
-            coupon.getEndDate()
-        ))
+        .map(coupon -> new CouponAvailability(coupon, getCurrentStock(coupon)))
+        .filter(availability -> availability.remainingQuantity() > 0)
+        .map(availability -> {
+          Coupon coupon = availability.coupon();
+          return new CouponAvailableResult.CouponItem(
+              coupon.getId(),
+              coupon.getName(),
+              coupon.getDescription(),
+              coupon.getCouponType(),
+              coupon.getDiscountValue(),
+              coupon.getMinOrderAmount(),
+              coupon.getMaxDiscountAmount(),
+              availability.remainingQuantity(),
+              coupon.getStartDate(),
+              coupon.getEndDate()
+          );
+        })
         .toList();
     return new CouponAvailableResult(coupons);
   }
@@ -70,6 +77,7 @@ public class CouponService {
         command.startDate().toZonedDateTime(),
         command.endDate().toZonedDateTime()
     ));
+    couponStockRepository.initializeStockIfAbsent(coupon.getId(), coupon.getRemainingQuantity());
 
     return new CouponCreateResult(
         coupon.getId(),
@@ -98,19 +106,27 @@ public class CouponService {
       throw new DuplicateCouponIssueException();
     }
 
-    if (!coupon.isIssuableAt(now)) {
-      if (coupon.getRemainingQuantity() <= 0) {
+    int currentStock = getCurrentStock(coupon);
+    if (!isCouponIssuableAt(coupon, now)) {
+      if (currentStock <= 0) {
         throw new CouponExhaustedException();
       }
       throw new CouponNotAvailableException();
     }
 
-    coupon.issue(now);
+    if (!couponStockRepository.decreaseStock(coupon.getId())) {
+      throw new CouponExhaustedException();
+    }
+
     IssuedCoupon issuedCoupon;
     try {
       issuedCoupon = issuedCouponRepository.store(IssuedCoupon.issue(coupon, command.userId(), now));
     } catch (DataIntegrityViolationException e) {
+      couponStockRepository.increaseStock(coupon.getId());
       throw new DuplicateCouponIssueException();
+    } catch (RuntimeException e) {
+      couponStockRepository.increaseStock(coupon.getId());
+      throw e;
     }
 
     return new CouponIssueResult(
@@ -127,7 +143,7 @@ public class CouponService {
   public CouponStockResult getStock(Long couponId) {
     Coupon coupon = couponRepository.readCoupon(couponId)
         .orElseThrow(CouponNotFoundException::new);
-    return new CouponStockResult(coupon.getId(), coupon.getRemainingQuantity());
+    return new CouponStockResult(coupon.getId(), getCurrentStock(coupon));
   }
 
   @Transactional(readOnly = true)
@@ -215,5 +231,30 @@ public class CouponService {
       discountAmount = Math.min(discountAmount, maxDiscountAmount);
     }
     return discountAmount;
+  }
+
+  private int getCurrentStock(Coupon coupon) {
+    Integer stock = couponStockRepository.readStock(coupon.getId());
+    if (stock != null) {
+      return stock;
+    }
+
+    int remainingStock = Math.max(
+        coupon.getTotalQuantity() - Math.toIntExact(issuedCouponRepository.countByCouponId(coupon.getId())),
+        0
+    );
+    couponStockRepository.initializeStockIfAbsent(coupon.getId(), remainingStock);
+
+    Integer initializedStock = couponStockRepository.readStock(coupon.getId());
+    return initializedStock == null ? remainingStock : initializedStock;
+  }
+
+  private boolean isCouponIssuableAt(Coupon coupon, ZonedDateTime now) {
+    return coupon.getStatus() == CouponStatus.ACTIVE
+        && (coupon.getStartDate().isBefore(now) || coupon.getStartDate().isEqual(now))
+        && (coupon.getEndDate().isAfter(now) || coupon.getEndDate().isEqual(now));
+  }
+
+  private record CouponAvailability(Coupon coupon, int remainingQuantity) {
   }
 }

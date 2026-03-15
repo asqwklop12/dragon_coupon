@@ -90,12 +90,9 @@ public class CouponV1Dto {
 
     @Schema(name = "CouponIssueResponse")
     public record Response(
-        Long issuedCouponId,
         Long couponId,
         Long userId,
-        IssuedCouponStatus status,
-        LocalDateTime issuedAt,
-        LocalDateTime expiredAt
+        LocalDateTime requestedAt
     ) {
     }
   }

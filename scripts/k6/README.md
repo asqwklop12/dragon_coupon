@@ -1,47 +1,55 @@
-# Coupon k6 발급 테스트 (별도 Docker Compose)
+# Coupon k6 발급 부하테스트
 
-앱용 `docker-compose.yml`와 분리해서,  
-`scripts/k6/docker-compose.yml`로만 k6를 실행합니다.
+`scripts/k6/docker-compose.yml` 기준으로 2가지 시나리오를 분리했습니다.
 
-## 1) 실행 방법
-```bash
-docker compose -f scripts/k6/docker-compose.yml run --rm k6-sequential
-```
+## 1) 시나리오 A: 쿠폰 10,000장
+- 목적: 재고가 충분할 때 처리량/지연(p95, p99) 확인
 
-## 2) 자주 쓰는 커스텀 옵션
-
-### 기존 쿠폰 100장 발급 소진 테스트
 ```bash
 K6_BASE_URL=http://host.docker.internal:8083 \
-K6_COUPON_ID=쿠폰ID \
-K6_ISSUE_COUNT=100 \
-K6_VUS=100 \
-K6_USER_ID_BASE=1 \
-docker compose -f scripts/k6/docker-compose.yml run --rm k6-sequential
+docker compose -f scripts/k6/docker-compose.yml run --rm k6-issue-large-stock
 ```
 
-### 신규 쿠폰 생성 후 순차 발급 (예: 3회)
+기본값
+- `COUPON_TOTAL_QUANTITY=10000`
+- `ISSUE_ATTEMPTS=10000`
+- `VUS=200`
+
+---
+
+## 2) 시나리오 B: 선착순 10장에 5,000명 경쟁
+- 목적: 초과 발급 방지(정합성) + 경합 시 지연 확인
+
 ```bash
-K6_ISSUE_COUNT=3 K6_USER_ID_BASE=1 \
-docker compose -f scripts/k6/docker-compose.yml run --rm k6-sequential
+K6_BASE_URL=http://host.docker.internal:8083 \
+docker compose -f scripts/k6/docker-compose.yml run --rm k6-issue-hot-race
 ```
 
-## 3) 환경변수
+기본값
+- `COUPON_TOTAL_QUANTITY=10`
+- `ISSUE_ATTEMPTS=5000`
+- `VUS=300`
 
-- `K6_BASE_URL` (기본: `http://host.docker.internal:8083`)
-- `K6_COUPON_ID` (선택: 기존 쿠폰 ID. 지정 시 setup에서 쿠폰 생성하지 않음)
-- `K6_ISSUE_COUNT` (기본: `3`, 1 이상의 정수)
-- `K6_VUS` (기본: `1`, 동시 실행 사용자 수)
-- `K6_USER_ID_BASE` (기본: `1`)
-- `K6_MAX_DURATION` (기본: `30s`)
+---
 
-동작 방식:
-- `K6_COUPON_ID` 미지정: setup 단계에서 테스트용 쿠폰 1개를 생성
-- `K6_COUPON_ID` 지정: 해당 기존 쿠폰으로 발급 수행
-- 이후 발급 API를 `K6_ISSUE_COUNT`만큼 순차 호출 (동시성 없음)
+## 공통 환경변수
+- `K6_BASE_URL` (필수)
+- `K6_COUPON_ID` (선택, 기존 쿠폰 사용)
+- `K6_COUPON_TOTAL_QUANTITY` (선택, 쿠폰 생성 시 수량)
+- `K6_ISSUE_ATTEMPTS` (선택, 발급 시도 횟수)
+- `K6_VUS` (선택, 동시 사용자 수)
+- `K6_USER_ID_BASE` (선택, 기본 1)
+- `K6_STOCK_READ_RETRIES` (선택, 재고 조회 재시도 횟수, 기본 3)
+- `K6_MAX_DURATION` (선택)
+- `K6_THRESHOLD_P95_MS` (선택, issue API p95 임계값)
+- `K6_THRESHOLD_P99_MS` (선택, issue API p99 임계값)
 
-> `K6_BASE_URL`은 실행 시 꼭 지정하세요.
-```bash
-K6_BASE_URL=http://localhost:8083 \
-docker compose -f scripts/k6/docker-compose.yml run --rm k6-sequential
-```
+기본 threshold
+- LARGE_STOCK: `p95 < 1200ms`, `p99 < 2500ms`
+- HOT_RACE: `p95 < 2500ms`, `p99 < 5000ms`
+
+## 결과 확인 포인트
+- `oversoldBySuccess` / `oversoldByStock` 가 `false`인지
+- `finalStock` / `finalStockSource` 로 최종 재고가 실제 조회됐는지
+- `http_req_duration p95 / p99`
+- `failureConflict(409)` 비율

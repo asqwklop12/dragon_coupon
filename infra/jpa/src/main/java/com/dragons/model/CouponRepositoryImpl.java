@@ -30,6 +30,11 @@ class CouponRepositoryImpl implements CouponRepository {
   }
 
   @Override
+  public Optional<Coupon> readCouponForUpdate(Long couponId) {
+    return jpaCouponRepository.findByIdForUpdate(couponId);
+  }
+
+  @Override
   public Optional<Coupon> readActiveCoupon(Long couponId) {
     return jpaCouponRepository.findByIdAndStatus(couponId, CouponStatus.ACTIVE);
   }
