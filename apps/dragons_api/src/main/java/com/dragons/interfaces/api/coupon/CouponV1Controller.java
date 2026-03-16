@@ -5,7 +5,7 @@ import com.dragons.application.coupon.CouponService;
 import com.dragons.application.coupon.dto.CouponCreateCommand;
 import com.dragons.application.coupon.dto.CouponIssueCommand;
 import com.dragons.application.coupon.dto.CouponUseCommand;
-import com.dragons.application.coupon.event.CouponIssueRequestedEvent;
+import com.dragons.coupon.issue.CouponIssueRequestedEvent;
 import com.dragons.interfaces.api.coupon.dto.CouponV1Dto;
 import com.dragons.support.api.ApiResponse;
 import jakarta.validation.Valid;

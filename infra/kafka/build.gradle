@@ -6,7 +6,8 @@ plugins {
 }
 
 dependencies {
-
+    implementation project(":common")
     api "org.springframework.boot:spring-boot-starter-kafka"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation "org.springframework.kafka:spring-kafka-test"
 }

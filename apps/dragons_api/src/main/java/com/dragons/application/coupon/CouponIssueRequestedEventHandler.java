@@ -1,23 +1,20 @@
-package com.dragons.interfaces.event;
+package com.dragons.application.coupon;
 
-import com.dragons.application.coupon.CouponService;
 import com.dragons.application.coupon.dto.CouponIssueCommand;
-import com.dragons.application.coupon.event.CouponIssueRequestedEvent;
+import com.dragons.coupon.issue.CouponIssueRequestHandler;
+import com.dragons.coupon.issue.CouponIssueRequestedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CouponIssueRequestedEventListener {
+public class CouponIssueRequestedEventHandler implements CouponIssueRequestHandler {
 
   private final CouponService couponService;
 
-  @Async
-  @EventListener
+  @Override
   public void handle(CouponIssueRequestedEvent event) {
     try {
       couponService.issueCoupon(new CouponIssueCommand(event.couponId(), event.userId()));
