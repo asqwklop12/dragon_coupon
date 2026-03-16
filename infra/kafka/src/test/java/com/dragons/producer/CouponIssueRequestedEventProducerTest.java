@@ -24,7 +24,7 @@ class CouponIssueRequestedEventProducerTest {
   void publish_sendsEventToKafka() {
     CouponIssueRequestedEvent event = new CouponIssueRequestedEvent(101L, 202L, ZonedDateTime.now());
 
-    couponIssueRequestedEventProducer.producer(event);
+    couponIssueRequestedEventProducer.send(event);
 
     verify(kafkaTemplate).send("coupon-issue-requests", "101", event);
   }

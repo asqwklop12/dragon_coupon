@@ -15,13 +15,13 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
-      group-id: loopers-default-consumer
+      group-id: default-consumer
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       properties:
         enable-auto-commit: false
     listener:
-      ack-mode: manual
+      ack-mode: record
 
 ---
 spring.config.activate.on-profile: local, test

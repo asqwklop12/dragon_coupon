@@ -27,6 +27,6 @@ class CouponIssueRequestServiceTest {
     assertThat(result.couponId()).isEqualTo(101L);
     assertThat(result.userId()).isEqualTo(202L);
     assertThat(result.requestedAt()).isNotNull();
-    verify(couponIssueRequestProducer).producer(result);
+    verify(couponIssueRequestProducer).send(result);
   }
 }

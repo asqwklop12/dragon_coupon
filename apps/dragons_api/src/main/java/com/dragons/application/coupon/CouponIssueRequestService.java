@@ -19,7 +19,7 @@ public class CouponIssueRequestService {
         command.userId(),
         ZonedDateTime.now()
     );
-    couponIssueRequestProducer.producer(event);
+    couponIssueRequestProducer.send(event);
     return event;
   }
 }

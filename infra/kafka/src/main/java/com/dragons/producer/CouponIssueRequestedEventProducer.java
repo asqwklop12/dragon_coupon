@@ -15,7 +15,7 @@ public class CouponIssueRequestedEventProducer implements CouponIssueRequestProd
   private final KafkaTemplate<Object, Object> kafkaTemplate;
 
   @Override
-  public void producer(CouponIssueRequestedEvent event) {
+  public void send(CouponIssueRequestedEvent event) {
     kafkaTemplate.send(COUPON_ISSUE_REQUEST_TOPIC, String.valueOf(event.couponId()), event);
   }
 }

@@ -14,10 +14,7 @@ public class CouponIssueRequestedEventConsumer {
 
   private final CouponIssueRequestHandler couponIssueRequestHandler;
 
-  @KafkaListener(
-      topics = COUPON_ISSUE_REQUEST_TOPIC,
-      containerFactory = "defaultSingleListenerContainerFactory"
-  )
+  @KafkaListener(topics = COUPON_ISSUE_REQUEST_TOPIC)
   public void handle(CouponIssueRequestedEvent event) {
     couponIssueRequestHandler.handle(event);
   }
