@@ -1,4 +1,4 @@
-package com.dragons.application.coupon.event;
+package com.dragons.coupon.issue;
 
 import java.time.ZonedDateTime;
 
