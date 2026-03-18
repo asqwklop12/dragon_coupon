@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CouponIssueRequestedEventProducer implements CouponIssueRequestProducer {
 
-  private static final String COUPON_ISSUE_REQUEST_TOPIC = "coupon-issue-requests";
+  private static final String COUPON_ISSUE_REQUEST_TOPIC = "coupon-issue-requests-v2";
 
   private final KafkaTemplate<Object, Object> kafkaTemplate;
 
   @Override
   public void send(CouponIssueRequestedEvent event) {
-    kafkaTemplate.send(COUPON_ISSUE_REQUEST_TOPIC, String.valueOf(event.couponId()), event);
+    kafkaTemplate.send(COUPON_ISSUE_REQUEST_TOPIC, String.valueOf(event.userId()), event);
   }
 }
