@@ -99,6 +99,11 @@ public class CouponService {
   @Transactional
   public CouponIssueResult issueCoupon(CouponIssueCommand command) {
     ZonedDateTime now = ZonedDateTime.now();
+    var existingIssue = issuedCouponRepository.readByIssueRequestId(command.issueRequestId());
+    if (existingIssue.isPresent()) {
+      return toIssueResult(existingIssue.get());
+    }
+
     Coupon coupon = couponRepository.readCoupon(command.couponId())
         .orElseThrow(CouponNotFoundException::new);
 
@@ -120,23 +125,23 @@ public class CouponService {
 
     IssuedCoupon issuedCoupon;
     try {
-      issuedCoupon = issuedCouponRepository.store(IssuedCoupon.issue(coupon, command.userId(), now));
+      issuedCoupon = issuedCouponRepository.store(IssuedCoupon.issue(
+          coupon,
+          command.userId(),
+          now,
+          command.issueRequestId()
+      ));
     } catch (DataIntegrityViolationException e) {
       couponStockRepository.increaseStock(coupon.getId());
-      throw new DuplicateCouponIssueException();
+      return issuedCouponRepository.readByIssueRequestId(command.issueRequestId())
+          .map(this::toIssueResult)
+          .orElseThrow(DuplicateCouponIssueException::new);
     } catch (RuntimeException e) {
       couponStockRepository.increaseStock(coupon.getId());
       throw e;
     }
 
-    return new CouponIssueResult(
-        issuedCoupon.getId(),
-        coupon.getId(),
-        issuedCoupon.getUserId(),
-        issuedCoupon.getStatus(),
-        issuedCoupon.getIssuedAt(),
-        issuedCoupon.getExpiredAt()
-    );
+    return toIssueResult(issuedCoupon);
   }
 
   @Transactional(readOnly = true)
@@ -253,6 +258,17 @@ public class CouponService {
     return coupon.getStatus() == CouponStatus.ACTIVE
         && (coupon.getStartDate().isBefore(now) || coupon.getStartDate().isEqual(now))
         && (coupon.getEndDate().isAfter(now) || coupon.getEndDate().isEqual(now));
+  }
+
+  private CouponIssueResult toIssueResult(IssuedCoupon issuedCoupon) {
+    return new CouponIssueResult(
+        issuedCoupon.getId(),
+        issuedCoupon.getCoupon().getId(),
+        issuedCoupon.getUserId(),
+        issuedCoupon.getStatus(),
+        issuedCoupon.getIssuedAt(),
+        issuedCoupon.getExpiredAt()
+    );
   }
 
   private record CouponAvailability(Coupon coupon, int remainingQuantity) {

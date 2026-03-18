@@ -22,11 +22,12 @@ class CouponIssueRequestServiceTest {
 
   @Test
   void requestIssue_publishesEventWithoutInfraDependency() {
-    var result = couponIssueRequestService.requestIssue(new CouponIssueCommand(101L, 202L));
+    var result = couponIssueRequestService.requestIssue(new CouponIssueCommand(101L, 202L, null));
 
     assertThat(result.couponId()).isEqualTo(101L);
     assertThat(result.userId()).isEqualTo(202L);
     assertThat(result.requestedAt()).isNotNull();
+    assertThat(result.eventId()).isNotBlank();
     verify(couponIssueRequestProducer).send(result);
   }
 }

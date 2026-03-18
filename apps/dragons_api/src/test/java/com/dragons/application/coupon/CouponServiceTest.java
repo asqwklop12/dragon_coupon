@@ -1,7 +1,6 @@
 package com.dragons.application.coupon;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -19,7 +18,6 @@ import com.dragons.domain.coupon.CouponUsageHistoryRepository;
 import com.dragons.domain.coupon.IssuedCoupon;
 import com.dragons.domain.coupon.IssuedCouponRepository;
 import com.dragons.domain.coupon.IssuedCouponStatus;
-import com.dragons.support.error.DuplicateCouponIssueException;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -75,15 +73,16 @@ class CouponServiceTest {
   @Test
   void issueCoupon_decreasesRedisStock_andStoresIssue() {
     Coupon coupon = createCouponEntity(1L, 10, 0);
-    IssuedCoupon issuedCoupon = createIssuedCouponEntity(100L, coupon, 55L);
+    IssuedCoupon issuedCoupon = createIssuedCouponEntity(100L, coupon, 55L, "evt-1");
 
+    when(issuedCouponRepository.readByIssueRequestId("evt-1")).thenReturn(Optional.empty());
     when(couponRepository.readCoupon(1L)).thenReturn(Optional.of(coupon));
     when(issuedCouponRepository.existsByCouponIdAndUserId(1L, 55L)).thenReturn(false);
     when(couponStockRepository.readStock(1L)).thenReturn(10);
     when(couponStockRepository.decreaseStock(1L)).thenReturn(true);
     when(issuedCouponRepository.store(any(IssuedCoupon.class))).thenReturn(issuedCoupon);
 
-    var result = couponService.issueCoupon(new CouponIssueCommand(1L, 55L));
+    var result = couponService.issueCoupon(new CouponIssueCommand(1L, 55L, "evt-1"));
 
     assertThat(result.issuedCouponId()).isEqualTo(100L);
     assertThat(result.couponId()).isEqualTo(1L);
@@ -96,7 +95,9 @@ class CouponServiceTest {
   @Test
   void issueCoupon_restoresRedisStock_whenInsertFailsByDuplicate() {
     Coupon coupon = createCouponEntity(1L, 10, 0);
+    IssuedCoupon issuedCoupon = createIssuedCouponEntity(100L, coupon, 55L, "evt-1");
 
+    when(issuedCouponRepository.readByIssueRequestId("evt-1")).thenReturn(Optional.empty(), Optional.of(issuedCoupon));
     when(couponRepository.readCoupon(1L)).thenReturn(Optional.of(coupon));
     when(issuedCouponRepository.existsByCouponIdAndUserId(1L, 55L)).thenReturn(false);
     when(couponStockRepository.readStock(1L)).thenReturn(10);
@@ -104,11 +105,25 @@ class CouponServiceTest {
     when(issuedCouponRepository.store(any(IssuedCoupon.class)))
         .thenThrow(new DataIntegrityViolationException("duplicate"));
 
-    assertThatThrownBy(() -> couponService.issueCoupon(new CouponIssueCommand(1L, 55L)))
-        .isInstanceOf(DuplicateCouponIssueException.class);
+    var result = couponService.issueCoupon(new CouponIssueCommand(1L, 55L, "evt-1"));
 
+    assertThat(result.issuedCouponId()).isEqualTo(100L);
     verify(couponStockRepository).decreaseStock(1L);
     verify(couponStockRepository).increaseStock(1L);
+  }
+
+  @Test
+  void issueCoupon_returnsExistingIssue_whenSameRequestIdAlreadyProcessed() {
+    Coupon coupon = createCouponEntity(1L, 10, 0);
+    IssuedCoupon issuedCoupon = createIssuedCouponEntity(100L, coupon, 55L, "evt-1");
+
+    when(issuedCouponRepository.readByIssueRequestId("evt-1")).thenReturn(Optional.of(issuedCoupon));
+
+    var result = couponService.issueCoupon(new CouponIssueCommand(1L, 55L, "evt-1"));
+
+    assertThat(result.issuedCouponId()).isEqualTo(100L);
+    verify(couponRepository, never()).readCoupon(1L);
+    verify(couponStockRepository, never()).decreaseStock(1L);
   }
 
   @Test
@@ -145,8 +160,8 @@ class CouponServiceTest {
     return coupon;
   }
 
-  private IssuedCoupon createIssuedCouponEntity(Long id, Coupon coupon, Long userId) {
-    IssuedCoupon issuedCoupon = IssuedCoupon.issue(coupon, userId, ZonedDateTime.now());
+  private IssuedCoupon createIssuedCouponEntity(Long id, Coupon coupon, Long userId, String issueRequestId) {
+    IssuedCoupon issuedCoupon = IssuedCoupon.issue(coupon, userId, ZonedDateTime.now(), issueRequestId);
     ReflectionTestUtils.setField(issuedCoupon, "id", id);
     ReflectionTestUtils.setField(issuedCoupon, "status", IssuedCouponStatus.ISSUED);
     return issuedCoupon;

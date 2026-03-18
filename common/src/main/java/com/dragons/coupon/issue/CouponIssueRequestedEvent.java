@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 public record CouponIssueRequestedEvent(
     Long couponId,
     Long userId,
-    ZonedDateTime requestedAt
+    ZonedDateTime requestedAt,
+    String eventId
 ) {
 }

@@ -88,7 +88,7 @@ public class CouponV1Controller implements CouponV1Spec {
       @RequestBody @Valid CouponV1Dto.Issue.Request request
   ) {
     CouponIssueRequestedEvent event = couponIssueRequestService.requestIssue(
-        new CouponIssueCommand(couponId, request.userId()));
+        new CouponIssueCommand(couponId, request.userId(), null));
     return ApiResponse.successResponse(new CouponV1Dto.Issue.Response(
         event.couponId(),
         event.userId(),
