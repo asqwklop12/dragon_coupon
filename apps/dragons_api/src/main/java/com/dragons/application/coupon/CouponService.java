@@ -28,6 +28,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 @RequiredArgsConstructor
@@ -104,23 +106,19 @@ public class CouponService {
       return toIssueResult(existingIssue.get());
     }
 
-    Coupon coupon = couponRepository.readCoupon(command.couponId())
+    Coupon coupon = couponRepository.readCouponForUpdate(command.couponId())
         .orElseThrow(CouponNotFoundException::new);
 
     if (issuedCouponRepository.existsByCouponIdAndUserId(command.couponId(), command.userId())) {
       throw new DuplicateCouponIssueException();
     }
 
-    int currentStock = getCurrentStock(coupon);
+    int currentStock = coupon.getRemainingQuantity();
     if (!isCouponIssuableAt(coupon, now)) {
       if (currentStock <= 0) {
         throw new CouponExhaustedException();
       }
       throw new CouponNotAvailableException();
-    }
-
-    if (!couponStockRepository.decreaseStock(coupon.getId())) {
-      throw new CouponExhaustedException();
     }
 
     IssuedCoupon issuedCoupon;
@@ -132,14 +130,13 @@ public class CouponService {
           command.issueRequestId()
       ));
     } catch (DataIntegrityViolationException e) {
-      couponStockRepository.increaseStock(coupon.getId());
       return issuedCouponRepository.readByIssueRequestId(command.issueRequestId())
           .map(this::toIssueResult)
           .orElseThrow(DuplicateCouponIssueException::new);
-    } catch (RuntimeException e) {
-      couponStockRepository.increaseStock(coupon.getId());
-      throw e;
     }
+
+    coupon.issue(now);
+    clearStockCacheAfterCommit(coupon.getId());
 
     return toIssueResult(issuedCoupon);
   }
@@ -257,7 +254,22 @@ public class CouponService {
   private boolean isCouponIssuableAt(Coupon coupon, ZonedDateTime now) {
     return coupon.getStatus() == CouponStatus.ACTIVE
         && (coupon.getStartDate().isBefore(now) || coupon.getStartDate().isEqual(now))
-        && (coupon.getEndDate().isAfter(now) || coupon.getEndDate().isEqual(now));
+        && (coupon.getEndDate().isAfter(now) || coupon.getEndDate().isEqual(now))
+        && coupon.getRemainingQuantity() > 0;
+  }
+
+  private void clearStockCacheAfterCommit(Long couponId) {
+    if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+      couponStockRepository.clearStock(couponId);
+      return;
+    }
+
+    TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+      @Override
+      public void afterCommit() {
+        couponStockRepository.clearStock(couponId);
+      }
+    });
   }
 
   private CouponIssueResult toIssueResult(IssuedCoupon issuedCoupon) {

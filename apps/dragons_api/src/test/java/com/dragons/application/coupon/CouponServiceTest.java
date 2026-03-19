@@ -71,15 +71,13 @@ class CouponServiceTest {
   }
 
   @Test
-  void issueCoupon_decreasesRedisStock_andStoresIssue() {
+  void issueCoupon_usesDbLock_andStoresIssue() {
     Coupon coupon = createCouponEntity(1L, 10, 0);
     IssuedCoupon issuedCoupon = createIssuedCouponEntity(100L, coupon, 55L, "evt-1");
 
     when(issuedCouponRepository.readByIssueRequestId("evt-1")).thenReturn(Optional.empty());
-    when(couponRepository.readCoupon(1L)).thenReturn(Optional.of(coupon));
+    when(couponRepository.readCouponForUpdate(1L)).thenReturn(Optional.of(coupon));
     when(issuedCouponRepository.existsByCouponIdAndUserId(1L, 55L)).thenReturn(false);
-    when(couponStockRepository.readStock(1L)).thenReturn(10);
-    when(couponStockRepository.decreaseStock(1L)).thenReturn(true);
     when(issuedCouponRepository.store(any(IssuedCoupon.class))).thenReturn(issuedCoupon);
 
     var result = couponService.issueCoupon(new CouponIssueCommand(1L, 55L, "evt-1"));
@@ -87,29 +85,27 @@ class CouponServiceTest {
     assertThat(result.issuedCouponId()).isEqualTo(100L);
     assertThat(result.couponId()).isEqualTo(1L);
     assertThat(result.userId()).isEqualTo(55L);
-    verify(couponRepository).readCoupon(1L);
-    verify(couponStockRepository).decreaseStock(1L);
-    verify(couponStockRepository, never()).increaseStock(1L);
+    assertThat(coupon.getIssuedQuantity()).isEqualTo(1);
+    verify(couponRepository).readCouponForUpdate(1L);
+    verify(couponStockRepository).clearStock(1L);
   }
 
   @Test
-  void issueCoupon_restoresRedisStock_whenInsertFailsByDuplicate() {
+  void issueCoupon_returnsExistingIssue_whenInsertFailsByDuplicateRequestId() {
     Coupon coupon = createCouponEntity(1L, 10, 0);
     IssuedCoupon issuedCoupon = createIssuedCouponEntity(100L, coupon, 55L, "evt-1");
 
     when(issuedCouponRepository.readByIssueRequestId("evt-1")).thenReturn(Optional.empty(), Optional.of(issuedCoupon));
-    when(couponRepository.readCoupon(1L)).thenReturn(Optional.of(coupon));
+    when(couponRepository.readCouponForUpdate(1L)).thenReturn(Optional.of(coupon));
     when(issuedCouponRepository.existsByCouponIdAndUserId(1L, 55L)).thenReturn(false);
-    when(couponStockRepository.readStock(1L)).thenReturn(10);
-    when(couponStockRepository.decreaseStock(1L)).thenReturn(true);
     when(issuedCouponRepository.store(any(IssuedCoupon.class)))
         .thenThrow(new DataIntegrityViolationException("duplicate"));
 
     var result = couponService.issueCoupon(new CouponIssueCommand(1L, 55L, "evt-1"));
 
     assertThat(result.issuedCouponId()).isEqualTo(100L);
-    verify(couponStockRepository).decreaseStock(1L);
-    verify(couponStockRepository).increaseStock(1L);
+    assertThat(coupon.getIssuedQuantity()).isEqualTo(0);
+    verify(couponStockRepository, never()).clearStock(1L);
   }
 
   @Test
@@ -122,8 +118,8 @@ class CouponServiceTest {
     var result = couponService.issueCoupon(new CouponIssueCommand(1L, 55L, "evt-1"));
 
     assertThat(result.issuedCouponId()).isEqualTo(100L);
-    verify(couponRepository, never()).readCoupon(1L);
-    verify(couponStockRepository, never()).decreaseStock(1L);
+    verify(couponRepository, never()).readCouponForUpdate(1L);
+    verify(couponStockRepository, never()).clearStock(1L);
   }
 
   @Test
