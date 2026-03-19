@@ -40,6 +40,11 @@ public class CouponStockRepositoryImpl implements CouponStockRepository {
   }
 
   @Override
+  public void clearStock(Long couponId) {
+    redisTemplate.delete(stockKey(couponId));
+  }
+
+  @Override
   public Integer readStock(Long couponId) {
     String value = redisTemplate.opsForValue().get(stockKey(couponId));
     return value == null ? null : Integer.valueOf(value);

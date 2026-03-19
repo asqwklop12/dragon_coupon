@@ -22,7 +22,7 @@ class CouponIssueRequestedEventConsumerTest {
 
   @Test
   void handle_delegatesToApplicationHandler() {
-    CouponIssueRequestedEvent event = new CouponIssueRequestedEvent(101L, 202L, ZonedDateTime.now());
+    CouponIssueRequestedEvent event = new CouponIssueRequestedEvent(101L, 202L, ZonedDateTime.now(), "evt-1");
 
     couponIssueRequestedEventConsumer.handle(event);
 

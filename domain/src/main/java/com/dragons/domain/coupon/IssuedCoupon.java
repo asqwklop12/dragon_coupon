@@ -21,10 +21,16 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(
     name = "issued_coupon",
-    uniqueConstraints = @UniqueConstraint(
-        name = "uk_issued_coupon_coupon_user",
-        columnNames = {"coupon_id", "user_id"}
-    )
+    uniqueConstraints = {
+        @UniqueConstraint(
+            name = "uk_issued_coupon_coupon_user",
+            columnNames = {"coupon_id", "user_id"}
+        ),
+        @UniqueConstraint(
+            name = "uk_issued_coupon_issue_request",
+            columnNames = "issue_request_id"
+        )
+    }
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class IssuedCoupon {
@@ -40,6 +46,9 @@ public class IssuedCoupon {
   @Column(nullable = false)
   private Long userId;
 
+  @Column(nullable = false, length = 36, updatable = false)
+  private String issueRequestId;
+
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 30)
   private IssuedCouponStatus status;
@@ -53,10 +62,11 @@ public class IssuedCoupon {
   @Column
   private ZonedDateTime usedAt;
 
-  public static IssuedCoupon issue(Coupon coupon, Long userId, ZonedDateTime issuedAt) {
+  public static IssuedCoupon issue(Coupon coupon, Long userId, ZonedDateTime issuedAt, String issueRequestId) {
     IssuedCoupon issuedCoupon = new IssuedCoupon();
     issuedCoupon.coupon = coupon;
     issuedCoupon.userId = userId;
+    issuedCoupon.issueRequestId = issueRequestId;
     issuedCoupon.status = IssuedCouponStatus.ISSUED;
     issuedCoupon.issuedAt = issuedAt;
     issuedCoupon.expiredAt = issuedAt.plusDays(coupon.getValidDays());

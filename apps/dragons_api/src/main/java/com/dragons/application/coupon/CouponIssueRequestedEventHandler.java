@@ -17,10 +17,15 @@ public class CouponIssueRequestedEventHandler implements CouponIssueRequestHandl
   @Override
   public void handle(CouponIssueRequestedEvent event) {
     try {
-      couponService.issueCoupon(new CouponIssueCommand(event.couponId(), event.userId()));
+      couponService.issueCoupon(new CouponIssueCommand(
+          event.couponId(),
+          event.userId(),
+          event.eventId()
+      ));
     } catch (RuntimeException exception) {
       log.error(
-          "Failed to process coupon issue request. couponId={}, userId={}, requestedAt={}",
+          "Failed to process coupon issue request. eventId={}, couponId={}, userId={}, requestedAt={}",
+          event.eventId(),
           event.couponId(),
           event.userId(),
           event.requestedAt(),

@@ -22,10 +22,10 @@ class CouponIssueRequestedEventProducerTest {
 
   @Test
   void publish_sendsEventToKafka() {
-    CouponIssueRequestedEvent event = new CouponIssueRequestedEvent(101L, 202L, ZonedDateTime.now());
+    CouponIssueRequestedEvent event = new CouponIssueRequestedEvent(101L, 202L, ZonedDateTime.now(), "evt-1");
 
     couponIssueRequestedEventProducer.send(event);
 
-    verify(kafkaTemplate).send("coupon-issue-requests", "101", event);
+    verify(kafkaTemplate).send("coupon-issue-requests-v2", "202", event);
   }
 }

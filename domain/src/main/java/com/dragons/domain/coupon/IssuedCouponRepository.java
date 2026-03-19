@@ -9,6 +9,8 @@ public interface IssuedCouponRepository {
 
   Optional<IssuedCoupon> readIssuedCoupon(Long issuedCouponId);
 
+  Optional<IssuedCoupon> readByIssueRequestId(String issueRequestId);
+
   boolean existsByCouponIdAndUserId(Long couponId, Long userId);
 
   long countByCouponId(Long couponId);
