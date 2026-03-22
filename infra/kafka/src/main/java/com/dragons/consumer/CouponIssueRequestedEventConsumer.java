@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CouponIssueRequestedEventConsumer {
 
-  private static final String COUPON_ISSUE_REQUEST_TOPIC = "coupon-issue-requests-v2";
+  private static final String COUPON_ISSUE_REQUEST_TOPIC = "coupon-issue-requests-v3";
 
   private final CouponIssueRequestHandler couponIssueRequestHandler;
 
