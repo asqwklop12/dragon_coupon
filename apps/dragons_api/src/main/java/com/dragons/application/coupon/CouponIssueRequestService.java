@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Slf4j
 @Service
@@ -37,50 +35,16 @@ public class CouponIssueRequestService {
         UUID.randomUUID().toString()
     );
 
-    try {
-      outboxEventRepository.store(OutboxEvent.create(
-          event.eventId(),
-          COUPON_ISSUE_REQUEST_TOPIC,
-          String.valueOf(event.userId()),
-          serialize(event),
-          requestedAt
-      ));
-    } catch (RuntimeException exception) {
-      log.error(
-          "Failed to persist coupon issue request to outbox. eventId={}, couponId={}, userId={}, errorType={}, errorMessage={}",
-          event.eventId(),
-          event.couponId(),
-          event.userId(),
-          exception.getClass().getName(),
-          exception.getMessage(),
-          exception
-      );
-      throw exception;
-    }
+    outboxEventRepository.store(OutboxEvent.create(
+        event.eventId(),
+        COUPON_ISSUE_REQUEST_TOPIC,
+        String.valueOf(event.userId()),
+        serialize(event),
+        requestedAt
+    ));
 
-    publishAfterCommit(event);
+    couponIssueRequestProducer.send(event);
     return event;
-  }
-
-  private void publishAfterCommit(CouponIssueRequestedEvent event) {
-    TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-      @Override
-      public void afterCommit() {
-        try {
-          couponIssueRequestProducer.send(event);
-        } catch (RuntimeException exception) {
-          log.error(
-              "Failed to publish coupon issue request after commit. eventId={}, couponId={}, userId={}, errorType={}, errorMessage={}",
-              event.eventId(),
-              event.couponId(),
-              event.userId(),
-              exception.getClass().getName(),
-              exception.getMessage(),
-              exception
-          );
-        }
-      }
-    });
   }
 
   private String serialize(CouponIssueRequestedEvent event) {
