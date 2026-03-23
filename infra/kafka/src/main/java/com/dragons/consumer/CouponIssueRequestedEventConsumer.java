@@ -16,7 +16,7 @@ public class CouponIssueRequestedEventConsumer {
 
   @KafkaListener(topics = COUPON_ISSUE_REQUEST_TOPIC,
       groupId = "coupon-issue-consumer-group",
-      concurrency = "3")
+      concurrency = "7")
   public void handle(CouponIssueRequestedEvent event) {
     couponIssueRequestHandler.handle(event);
   }

@@ -2,6 +2,8 @@ package com.dragons.domain.outbox;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,6 +46,16 @@ public class OutboxEvent {
   @Column(nullable = false, updatable = false)
   private String payload;
 
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 20)
+  private OutboxEventStatus status;
+
+  @Column(nullable = false)
+  private int retryCount;
+
+  @Column(name = "published_at")
+  private ZonedDateTime publishedAt;
+
   @Column(name = "created_at", nullable = false, updatable = false)
   private ZonedDateTime createdAt;
 
@@ -59,7 +71,20 @@ public class OutboxEvent {
     outboxEvent.topic = topic;
     outboxEvent.partitionKey = partitionKey;
     outboxEvent.payload = payload;
+    outboxEvent.status = OutboxEventStatus.PENDING;
+    outboxEvent.retryCount = 0;
+    outboxEvent.publishedAt = null;
     outboxEvent.createdAt = createdAt;
     return outboxEvent;
+  }
+
+  public void markSent(ZonedDateTime publishedAt) {
+    this.status = OutboxEventStatus.SENT;
+    this.publishedAt = publishedAt;
+  }
+
+  public void markFailed() {
+    this.status = OutboxEventStatus.FAILED;
+    this.retryCount += 1;
   }
 }

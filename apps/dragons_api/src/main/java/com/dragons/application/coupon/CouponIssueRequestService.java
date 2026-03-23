@@ -1,7 +1,6 @@
 package com.dragons.application.coupon;
 
 import com.dragons.application.coupon.dto.CouponIssueCommand;
-import com.dragons.coupon.issue.CouponIssueRequestProducer;
 import com.dragons.coupon.issue.CouponIssueRequestedEvent;
 import com.dragons.domain.outbox.OutboxEvent;
 import com.dragons.domain.outbox.OutboxEventRepository;
@@ -23,7 +22,6 @@ public class CouponIssueRequestService {
 
   private final OutboxEventRepository outboxEventRepository;
   private final ObjectMapper objectMapper;
-  private final CouponIssueRequestProducer couponIssueRequestProducer;
 
   @Transactional
   public CouponIssueRequestedEvent requestIssue(CouponIssueCommand command) {
@@ -43,7 +41,6 @@ public class CouponIssueRequestService {
         requestedAt
     ));
 
-    couponIssueRequestProducer.send(event);
     return event;
   }
 

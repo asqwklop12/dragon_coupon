@@ -1,4 +1,3 @@
-import {sleep} from 'k6';
 import http from 'k6/http';
 import exec from 'k6/execution';
 import {Counter, Gauge} from 'k6/metrics';
@@ -12,8 +11,6 @@ const CASE_PRESET = {
     issueAttempts: 10000,
     vus: 200,
     maxDuration: '5m',
-    drainWaitTimeoutSec: 180,
-    drainWaitIntervalMs: 1000,
     thresholdP95Ms: 1200,
     thresholdP99Ms: 2500,
   },
@@ -22,8 +19,6 @@ const CASE_PRESET = {
     issueAttempts: 5000,
     vus: 300,
     maxDuration: '3m',
-    drainWaitTimeoutSec: 60,
-    drainWaitIntervalMs: 1000,
     thresholdP95Ms: 2500,
     thresholdP99Ms: 5000,
   },
@@ -40,18 +35,9 @@ const ISSUE_ATTEMPTS = readPositiveIntEnv('ISSUE_ATTEMPTS', CASE_CONFIG.issueAtt
 const VUS = readPositiveIntEnv('VUS', CASE_CONFIG.vus);
 const USER_ID_BASE = readPositiveIntEnv('USER_ID_BASE', 1);
 const STOCK_READ_RETRIES = readPositiveIntEnv('STOCK_READ_RETRIES', 3);
-const DRAIN_WAIT_TIMEOUT_SEC = readPositiveIntEnv(
-  'DRAIN_WAIT_TIMEOUT_SEC',
-  CASE_CONFIG.drainWaitTimeoutSec,
-);
-const DRAIN_WAIT_INTERVAL_MS = readPositiveIntEnv(
-  'DRAIN_WAIT_INTERVAL_MS',
-  CASE_CONFIG.drainWaitIntervalMs,
-);
 const MAX_DURATION = __ENV.MAX_DURATION || CASE_CONFIG.maxDuration;
 const THRESHOLD_P95_MS = readPositiveIntEnv('THRESHOLD_P95_MS', CASE_CONFIG.thresholdP95Ms);
 const THRESHOLD_P99_MS = readPositiveIntEnv('THRESHOLD_P99_MS', CASE_CONFIG.thresholdP99Ms);
-const TEARDOWN_TIMEOUT_SEC = Math.max(DRAIN_WAIT_TIMEOUT_SEC + 30, 120);
 
 const issueAcceptedCounter = new Counter('issue_success');
 const issueFailureCounter = new Counter('issue_failure');
@@ -70,7 +56,6 @@ export const options = {
       maxDuration: MAX_DURATION,
     },
   },
-  teardownTimeout: `${TEARDOWN_TIMEOUT_SEC}s`,
   summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)'],
   thresholds: {
     'http_req_duration{type:issue}': [
@@ -229,61 +214,14 @@ export default function (data) {
   }
 }
 
-function waitForExpectedFinalStock(couponId, expectedFinalStock, phase = 'teardown') {
-  if (expectedFinalStock === null) {
-    return {
-      finalStock: readRemainingStockWithRetry(couponId, STOCK_READ_RETRIES, phase),
-      completed: false,
-      attempts: 0,
-      waitedMs: 0,
-    };
-  }
-
-  const maxAttempts = Math.max(1, Math.ceil((DRAIN_WAIT_TIMEOUT_SEC * 1000) / DRAIN_WAIT_INTERVAL_MS));
-  let finalStock = null;
-  let minObservedStock = null;
-
-  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-    finalStock = readRemainingStockWithRetry(couponId, STOCK_READ_RETRIES, phase);
-
-    if (finalStock !== null) {
-      minObservedStock = minObservedStock === null
-        ? finalStock
-        : Math.min(minObservedStock, finalStock);
-    }
-
-    if (finalStock !== null && finalStock <= expectedFinalStock) {
-      return {
-        finalStock: minObservedStock ?? finalStock,
-        completed: true,
-        attempts: attempt,
-        waitedMs: (attempt - 1) * DRAIN_WAIT_INTERVAL_MS,
-      };
-    }
-
-    if (attempt < maxAttempts) {
-      sleep(DRAIN_WAIT_INTERVAL_MS / 1000);
-    }
-  }
-
-  const resolvedFinalStock = minObservedStock ?? finalStock;
-  return {
-    finalStock: resolvedFinalStock,
-    completed: resolvedFinalStock !== null && resolvedFinalStock <= expectedFinalStock,
-    attempts: maxAttempts,
-    waitedMs: Math.max(0, (maxAttempts - 1) * DRAIN_WAIT_INTERVAL_MS),
-  };
-}
-
 export function teardown(data) {
-  const drainResult = waitForExpectedFinalStock(data.couponId, data.expectedFinalStock, 'teardown');
-  const finalStock = drainResult.finalStock;
+  const finalStock = readRemainingStockWithRetry(data.couponId, STOCK_READ_RETRIES, 'teardown');
   if (finalStock !== null) {
     finalStockGauge.add(finalStock);
   }
 
   console.log(
-    `[teardown] case=${TEST_CASE}, couponId=${data.couponId}, source=${data.couponSource}, initialStock=${data.initialStock}, expectedFinalStock=${data.expectedFinalStock}, finalStock=${finalStock}, drainCompleted=${drainResult.completed}, drainAttempts=${drainResult.attempts}, drainWaitedMs=${drainResult.waitedMs}`,
+    `[teardown] case=${TEST_CASE}, couponId=${data.couponId}, source=${data.couponSource}, initialStock=${data.initialStock}, expectedFinalStock=${data.expectedFinalStock}, finalStock=${finalStock}`,
   );
 }
 
@@ -387,8 +325,6 @@ export function handleSummary(data) {
     `- http_req_duration p95(ms): ${p95}`,
     `- http_req_duration p99(ms): ${p99}`,
     `- http_req_duration max(ms): ${max}`,
-    `- drain wait timeout(sec): ${DRAIN_WAIT_TIMEOUT_SEC}`,
-    `- drain wait interval(ms): ${DRAIN_WAIT_INTERVAL_MS}`,
     `- threshold p95(ms): < ${THRESHOLD_P95_MS}`,
     `- threshold p99(ms): < ${THRESHOLD_P99_MS}`,
     '======================================',

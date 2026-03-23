@@ -2,6 +2,7 @@ package com.dragons.application.coupon;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,7 +33,7 @@ class CouponIssueRequestServiceTest {
   private CouponIssueRequestService couponIssueRequestService;
 
   @Test
-  void requestIssue_storesOutboxEvent_thenPublishesEvent() throws Exception {
+  void requestIssue_storesOutboxEventOnly() throws Exception {
     when(objectMapper.writeValueAsString(any())).thenReturn("{\"eventId\":\"evt-1\"}");
 
     var result = couponIssueRequestService.requestIssue(new CouponIssueCommand(101L, 202L, null));
@@ -42,6 +43,6 @@ class CouponIssueRequestServiceTest {
     assertThat(result.requestedAt()).isNotNull();
     assertThat(result.eventId()).isNotBlank();
     verify(outboxEventRepository).store(any(OutboxEvent.class));
-    verify(couponIssueRequestProducer).send(result);
+    verify(couponIssueRequestProducer, never()).send(any());
   }
 }
