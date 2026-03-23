@@ -30,6 +30,8 @@ public class KafkaConfig {
   private static final int SESSION_TIMEOUT_MS = 60 * 1000; // session timeout = 1m
   private static final int HEARTBEAT_INTERVAL_MS = 20 * 1000; // heartbeat interval = 20s (1/3 of session_timeout)
   private static final int MAX_POLL_INTERVAL_MS = 2 * 60 * 1000; // max poll interval = 2m
+  private static final int PRODUCER_RETRIES = 3;
+  private static final int PRODUCER_RETRY_BACKOFF_MS = 1_000;
 
   @Bean
   public ProducerFactory<Object, Object> producerFactory(KafkaProperties kafkaProperties) {
@@ -45,7 +47,10 @@ public class KafkaConfig {
   @Bean
   public KafkaTemplate<Object, Object> kafkaAtLeastTemplate(KafkaProperties kafkaProperties) {
     Map<String, Object> props = new HashMap<>(kafkaProperties.buildProducerProperties());
-    props.put(ProducerConfig.ACKS_CONFIG, "all"); // 덮어쓰기
+    props.put(ProducerConfig.ACKS_CONFIG, "all");
+    props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+    props.put(ProducerConfig.RETRIES_CONFIG, PRODUCER_RETRIES);
+    props.put(ProducerConfig.RETRY_BACKOFF_MS_CONFIG, PRODUCER_RETRY_BACKOFF_MS);
     ProducerFactory<Object, Object> producerFactory = new DefaultKafkaProducerFactory<>(props);
     return new KafkaTemplate<>(producerFactory);
   }
