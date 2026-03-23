@@ -20,7 +20,10 @@ public class CouponIssueRequestedEventConsumer {
   private final CouponIssueRequestHandler couponIssueRequestHandler;
 
   @RetryableTopic(
-      backOff = @BackOff(delay = 1000, multiplier = 2.0)
+      attempts = "3",
+      kafkaTemplate =  "kafkaAtLeastTemplate",
+      backOff = @BackOff(delay = 1000, multiplier = 2.0),
+      dltTopicSuffix = "-dlt"
   )
   @KafkaListener(topics = COUPON_ISSUE_REQUEST_TOPIC,
       groupId = "coupon-issue-consumer-group",
