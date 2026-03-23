@@ -25,7 +25,7 @@ public class CouponIssueOutboxRelay {
   private final ObjectMapper objectMapper;
 
   @Transactional
-  @Scheduled(fixedDelayString = "${coupon.issue.outbox.retry-delay-ms:1000}")
+  @Scheduled(fixedDelayString = "${coupon.issue.outbox.retry-delay-ms:30000}")
   public void relay() {
     List<OutboxEvent> retryTargets = outboxEventRepository.readRetryTargets(BATCH_SIZE);
 

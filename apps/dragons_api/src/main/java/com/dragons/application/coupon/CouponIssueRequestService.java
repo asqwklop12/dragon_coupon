@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Slf4j
 @Service
@@ -21,6 +23,7 @@ public class CouponIssueRequestService {
   private static final String COUPON_ISSUE_REQUEST_TOPIC = "coupon-issue-requests-v3";
 
   private final OutboxEventRepository outboxEventRepository;
+  private final CouponIssueOutboxImmediatePublisher couponIssueOutboxImmediatePublisher;
   private final ObjectMapper objectMapper;
 
   @Transactional
@@ -33,7 +36,7 @@ public class CouponIssueRequestService {
         UUID.randomUUID().toString()
     );
 
-    outboxEventRepository.store(OutboxEvent.create(
+    OutboxEvent outboxEvent = outboxEventRepository.store(OutboxEvent.create(
         event.eventId(),
         COUPON_ISSUE_REQUEST_TOPIC,
         String.valueOf(event.userId()),
@@ -41,6 +44,7 @@ public class CouponIssueRequestService {
         requestedAt
     ));
 
+    couponIssueOutboxImmediatePublisher.publish(outboxEvent, event);
     return event;
   }
 
