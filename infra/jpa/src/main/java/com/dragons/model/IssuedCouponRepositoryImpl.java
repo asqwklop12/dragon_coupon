@@ -25,8 +25,13 @@ class IssuedCouponRepositoryImpl implements IssuedCouponRepository {
   }
 
   @Override
+  public Optional<IssuedCoupon> readByIssueRequestId(String issueRequestId) {
+    return jpaIssuedCouponRepository.findByIssueRequestId(issueRequestId);
+  }
+
+  @Override
   public boolean existsByCouponIdAndUserId(Long couponId, Long userId) {
-    return jpaIssuedCouponRepository.existsByCoupon_IdAndUserId(couponId, userId);
+    return jpaIssuedCouponRepository.existsByCouponIdAndUserId(couponId, userId);
   }
 
   @Override

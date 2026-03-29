@@ -28,6 +28,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 @RequiredArgsConstructor
@@ -99,14 +101,19 @@ public class CouponService {
   @Transactional
   public CouponIssueResult issueCoupon(CouponIssueCommand command) {
     ZonedDateTime now = ZonedDateTime.now();
-    Coupon coupon = couponRepository.readCoupon(command.couponId())
+    var existingIssue = issuedCouponRepository.readByIssueRequestId(command.issueRequestId());
+    if (existingIssue.isPresent()) {
+      return toIssueResult(existingIssue.get());
+    }
+
+    Coupon coupon = couponRepository.readCouponForUpdate(command.couponId())
         .orElseThrow(CouponNotFoundException::new);
 
     if (issuedCouponRepository.existsByCouponIdAndUserId(command.couponId(), command.userId())) {
       throw new DuplicateCouponIssueException();
     }
 
-    int currentStock = getCurrentStock(coupon);
+    int currentStock = coupon.getRemainingQuantity();
     if (!isCouponIssuableAt(coupon, now)) {
       if (currentStock <= 0) {
         throw new CouponExhaustedException();
@@ -114,29 +121,24 @@ public class CouponService {
       throw new CouponNotAvailableException();
     }
 
-    if (!couponStockRepository.decreaseStock(coupon.getId())) {
-      throw new CouponExhaustedException();
-    }
-
     IssuedCoupon issuedCoupon;
     try {
-      issuedCoupon = issuedCouponRepository.store(IssuedCoupon.issue(coupon, command.userId(), now));
+      issuedCoupon = issuedCouponRepository.store(IssuedCoupon.issue(
+          coupon,
+          command.userId(),
+          now,
+          command.issueRequestId()
+      ));
     } catch (DataIntegrityViolationException e) {
-      couponStockRepository.increaseStock(coupon.getId());
-      throw new DuplicateCouponIssueException();
-    } catch (RuntimeException e) {
-      couponStockRepository.increaseStock(coupon.getId());
-      throw e;
+      return issuedCouponRepository.readByIssueRequestId(command.issueRequestId())
+          .map(this::toIssueResult)
+          .orElseThrow(DuplicateCouponIssueException::new);
     }
 
-    return new CouponIssueResult(
-        issuedCoupon.getId(),
-        coupon.getId(),
-        issuedCoupon.getUserId(),
-        issuedCoupon.getStatus(),
-        issuedCoupon.getIssuedAt(),
-        issuedCoupon.getExpiredAt()
-    );
+    coupon.issue(now);
+    clearStockCacheAfterCommit(coupon.getId());
+
+    return toIssueResult(issuedCoupon);
   }
 
   @Transactional(readOnly = true)
@@ -252,7 +254,33 @@ public class CouponService {
   private boolean isCouponIssuableAt(Coupon coupon, ZonedDateTime now) {
     return coupon.getStatus() == CouponStatus.ACTIVE
         && (coupon.getStartDate().isBefore(now) || coupon.getStartDate().isEqual(now))
-        && (coupon.getEndDate().isAfter(now) || coupon.getEndDate().isEqual(now));
+        && (coupon.getEndDate().isAfter(now) || coupon.getEndDate().isEqual(now))
+        && coupon.getRemainingQuantity() > 0;
+  }
+
+  private void clearStockCacheAfterCommit(Long couponId) {
+    if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+      couponStockRepository.clearStock(couponId);
+      return;
+    }
+
+    TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+      @Override
+      public void afterCommit() {
+        couponStockRepository.clearStock(couponId);
+      }
+    });
+  }
+
+  private CouponIssueResult toIssueResult(IssuedCoupon issuedCoupon) {
+    return new CouponIssueResult(
+        issuedCoupon.getId(),
+        issuedCoupon.getCoupon().getId(),
+        issuedCoupon.getUserId(),
+        issuedCoupon.getStatus(),
+        issuedCoupon.getIssuedAt(),
+        issuedCoupon.getExpiredAt()
+    );
   }
 
   private record CouponAvailability(Coupon coupon, int remainingQuantity) {

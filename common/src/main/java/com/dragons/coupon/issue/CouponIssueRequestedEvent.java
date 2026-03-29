@@ -1,10 +1,11 @@
-package com.dragons.application.coupon.event;
+package com.dragons.coupon.issue;
 
 import java.time.ZonedDateTime;
 
 public record CouponIssueRequestedEvent(
     Long couponId,
     Long userId,
-    ZonedDateTime requestedAt
+    ZonedDateTime requestedAt,
+    String eventId
 ) {
 }

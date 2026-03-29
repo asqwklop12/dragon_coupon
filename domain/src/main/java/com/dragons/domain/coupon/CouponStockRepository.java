@@ -7,5 +7,7 @@ public interface CouponStockRepository {
 
   void increaseStock(Long couponId);
 
+  void clearStock(Long couponId);
+
   Integer readStock(Long couponId);
 }

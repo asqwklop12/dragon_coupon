@@ -39,12 +39,11 @@ const MAX_DURATION = __ENV.MAX_DURATION || CASE_CONFIG.maxDuration;
 const THRESHOLD_P95_MS = readPositiveIntEnv('THRESHOLD_P95_MS', CASE_CONFIG.thresholdP95Ms);
 const THRESHOLD_P99_MS = readPositiveIntEnv('THRESHOLD_P99_MS', CASE_CONFIG.thresholdP99Ms);
 
-const issueSuccessCounter = new Counter('issue_success');
+const issueAcceptedCounter = new Counter('issue_success');
 const issueFailureCounter = new Counter('issue_failure');
 const issueConflictCounter = new Counter('issue_failure_conflict');
 const issueBadRequestCounter = new Counter('issue_failure_bad_request');
-const issueEtcFailureCounter = new Counter('issue_failure_other');
-
+const issueOtherCounter = new Counter('issue_failure_other');
 const initialStockGauge = new Gauge('coupon_stock_initial');
 const finalStockGauge = new Gauge('coupon_stock_final');
 
@@ -138,16 +137,21 @@ function readRemainingStock(couponId) {
 }
 
 function readRemainingStockWithRetry(couponId, attempts = STOCK_READ_RETRIES, phase = 'stock') {
+  let minObservedStock = null;
+
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     const remainingStock = readRemainingStock(couponId);
     if (remainingStock !== null) {
-      return remainingStock;
+      minObservedStock = minObservedStock === null
+        ? remainingStock
+        : Math.min(minObservedStock, remainingStock);
+      return minObservedStock;
     }
 
     console.warn(`[${phase}] 조회 재시도 실패 attempt=${attempt}/${attempts}, couponId=${couponId}`);
   }
 
-  return null;
+  return minObservedStock;
 }
 
 export function setup() {
@@ -159,15 +163,18 @@ export function setup() {
     initialStockGauge.add(initialStock);
   }
 
-  const expectedMaxSuccess = initialStock === null
+  const expectedMaxAccepted = initialStock === null
     ? Math.min(COUPON_TOTAL_QUANTITY, ISSUE_ATTEMPTS)
     : Math.min(initialStock, ISSUE_ATTEMPTS);
+  const expectedFinalStock = initialStock === null
+    ? null
+    : Math.max(initialStock - expectedMaxAccepted, 0);
 
   console.log(
-    `[setup] case=${TEST_CASE}, couponId=${couponId}, source=${couponSource}, totalQuantity=${COUPON_TOTAL_QUANTITY}, attempts=${ISSUE_ATTEMPTS}, vus=${VUS}, initialStock=${initialStock}, expectedMaxSuccess=${expectedMaxSuccess}`,
+    `[setup] case=${TEST_CASE}, couponId=${couponId}, source=${couponSource}, totalQuantity=${COUPON_TOTAL_QUANTITY}, attempts=${ISSUE_ATTEMPTS}, vus=${VUS}, initialStock=${initialStock}, expectedMaxAccepted=${expectedMaxAccepted}`,
   );
 
-  return {couponId, couponSource, initialStock, expectedMaxSuccess};
+  return {couponId, couponSource, initialStock, expectedMaxAccepted, expectedFinalStock};
 }
 
 export default function (data) {
@@ -183,17 +190,17 @@ export default function (data) {
     },
   );
 
-  let issued = false;
+  let accepted = false;
   if (response.status >= 200 && response.status < 300) {
     const body = response.json();
-    issued = body?.success === true
+    accepted = body?.success === true
       && body?.data?.couponId === data.couponId
       && body?.data?.userId === userId
       && body?.data?.requestedAt != null;
   }
 
-  if (issued) {
-    issueSuccessCounter.add(1);
+  if (accepted) {
+    issueAcceptedCounter.add(1);
     return;
   }
 
@@ -203,7 +210,7 @@ export default function (data) {
   } else if (response.status === 400) {
     issueBadRequestCounter.add(1);
   } else {
-    issueEtcFailureCounter.add(1);
+    issueOtherCounter.add(1);
   }
 }
 
@@ -214,7 +221,7 @@ export function teardown(data) {
   }
 
   console.log(
-    `[teardown] case=${TEST_CASE}, couponId=${data.couponId}, source=${data.couponSource}, initialStock=${data.initialStock}, finalStock=${finalStock}`,
+    `[teardown] case=${TEST_CASE}, couponId=${data.couponId}, source=${data.couponSource}, initialStock=${data.initialStock}, expectedFinalStock=${data.expectedFinalStock}, finalStock=${finalStock}`,
   );
 }
 
@@ -232,8 +239,34 @@ function readDuration(data, name) {
   return value === undefined ? null : Number(value);
 }
 
+function resolveFinalStock(teardownFinalStock, latestObservedFinalStock) {
+  if (teardownFinalStock !== null && latestObservedFinalStock !== null) {
+    return latestObservedFinalStock <= teardownFinalStock
+      ? {
+        finalStock: latestObservedFinalStock,
+        finalStockSource: 'handleSummary_http',
+      }
+      : {
+        finalStock: teardownFinalStock,
+        finalStockSource: 'metric',
+      };
+  }
+
+  if (latestObservedFinalStock !== null) {
+    return {
+      finalStock: latestObservedFinalStock,
+      finalStockSource: 'handleSummary_http',
+    };
+  }
+
+  return {
+    finalStock: teardownFinalStock,
+    finalStockSource: teardownFinalStock !== null ? 'metric' : 'unavailable',
+  };
+}
+
 export function handleSummary(data) {
-  const success = readMetricCount(data, 'issue_success');
+  const accepted = readMetricCount(data, 'issue_success');
   const failure = readMetricCount(data, 'issue_failure');
   const failureConflict = readMetricCount(data, 'issue_failure_conflict');
   const failureBadRequest = readMetricCount(data, 'issue_failure_bad_request');
@@ -241,26 +274,24 @@ export function handleSummary(data) {
 
   const couponId = Number(data.setup_data?.couponId ?? 0) || null;
   const initialStock = readGaugeValue(data, 'coupon_stock_initial');
-  const finalStockFromMetric = readGaugeValue(data, 'coupon_stock_final');
-  const finalStockFromHttp = finalStockFromMetric === null && couponId !== null
+  const teardownFinalStock = readGaugeValue(data, 'coupon_stock_final');
+  const latestObservedFinalStock = couponId !== null
     ? readRemainingStockWithRetry(couponId, STOCK_READ_RETRIES, 'handleSummary')
     : null;
-  const finalStock = finalStockFromMetric ?? finalStockFromHttp;
-  const finalStockSource = finalStockFromMetric !== null
-    ? 'metric'
-    : finalStockFromHttp !== null
-      ? 'handleSummary_http'
-      : 'unavailable';
-  const expectedMaxSuccess = initialStock === null
+  const {finalStock, finalStockSource} = resolveFinalStock(
+    teardownFinalStock,
+    latestObservedFinalStock,
+  );
+
+  const expectedMaxAccepted = initialStock === null
     ? Math.min(COUPON_TOTAL_QUANTITY, ISSUE_ATTEMPTS)
     : Math.min(initialStock, ISSUE_ATTEMPTS);
-
   const actualIssuedByStock = initialStock !== null && finalStock !== null
     ? initialStock - finalStock
     : null;
 
-  const oversoldBySuccess = success > expectedMaxSuccess;
-  const oversoldByStock = actualIssuedByStock !== null && actualIssuedByStock > expectedMaxSuccess;
+  const oversoldByAccepted = accepted > expectedMaxAccepted;
+  const oversoldByStock = actualIssuedByStock !== null && actualIssuedByStock > expectedMaxAccepted;
 
   const p95 = readDuration(data, 'p(95)');
   const p99 = readDuration(data, 'p(99)');
@@ -275,17 +306,20 @@ export function handleSummary(data) {
     `- couponTotalQuantity: ${COUPON_TOTAL_QUANTITY}`,
     `- issueAttempts: ${ISSUE_ATTEMPTS}`,
     `- vus: ${VUS}`,
-    `- success: ${success}`,
+    `- accepted: ${accepted}`,
     `- failure: ${failure}`,
     `  - failureConflict(409): ${failureConflict}`,
     `  - failureBadRequest(400): ${failureBadRequest}`,
     `  - failureOther: ${failureOther}`,
     `- initialStock: ${initialStock}`,
+    `- teardownFinalStock: ${teardownFinalStock}`,
+    `- latestObservedFinalStock: ${latestObservedFinalStock}`,
     `- finalStock: ${finalStock}`,
     `- finalStockSource: ${finalStockSource}`,
     `- actualIssuedByStock: ${actualIssuedByStock}`,
-    `- expectedMaxSuccess: ${expectedMaxSuccess}`,
-    `- oversoldBySuccess: ${oversoldBySuccess}`,
+    `- expectedMaxAccepted: ${expectedMaxAccepted}`,
+    `- expectedFinalStock: ${data.setup_data?.expectedFinalStock ?? null}`,
+    `- oversoldByAccepted: ${oversoldByAccepted}`,
     `- oversoldByStock: ${oversoldByStock}`,
     `- http_req_duration avg(ms): ${avg}`,
     `- http_req_duration p95(ms): ${p95}`,
