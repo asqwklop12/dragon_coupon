@@ -59,8 +59,6 @@ bash scripts/k6/run-vus-ladder.sh
 - `K6_VUS` (선택, 동시 사용자 수)
 - `K6_USER_ID_BASE` (선택, 기본 1)
 - `K6_STOCK_READ_RETRIES` (선택, 재고 조회 재시도 횟수, 기본 3)
-- `K6_DRAIN_WAIT_TIMEOUT_SEC` (선택, 종료 후 Kafka consumer drain 대기 시간)
-- `K6_DRAIN_WAIT_INTERVAL_MS` (선택, 종료 후 재고 재조회 간격)
 - `K6_MAX_DURATION` (선택)
 - `K6_THRESHOLD_P95_MS` (선택, issue API p95 임계값)
 - `K6_THRESHOLD_P99_MS` (선택, issue API p99 임계값)
@@ -71,10 +69,6 @@ bash scripts/k6/run-vus-ladder.sh
 기본 threshold
 - LARGE_STOCK: `p95 < 1200ms`, `p99 < 2500ms`
 - HOT_RACE: `p95 < 2500ms`, `p99 < 5000ms`
-
-기본 drain 대기
-- LARGE_STOCK: `180초`
-- HOT_RACE: `60초`
 
 ## 결과 확인 포인트
 - `oversoldByAccepted` / `oversoldByStock` 가 `false`인지
